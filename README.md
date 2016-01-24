@@ -8,8 +8,6 @@ Download, unzip, double click the Qordoba.sketchplugin file. It will be installe
 
 ![Alt text](https://storage.googleapis.com/storage.qordoba.com/Plugin%20Menu.png "Installation")
 
-### Version
-1.3
 
 
 ### Demo 
@@ -26,12 +24,14 @@ To upload a selected Page to Qordoba, go to Plugins → Qordoba → Upload Curre
 If the Page has already been sent to same Project, a versioning suffix will be
 added to the end of the Page name within Qordoba.
 
+
 ##### Download a translated page from Qordoba
 
 ![Alt text](https://storage.googleapis.com/storage.qordoba.com/Downloading.gif " Download a translated page from Qordoba")
 
 
 To download the translation of a Page, go to Plugins → Qordoba → Download Current Page. Choose what language you want to download (this is defined in your Qordoba project settings). Ta da! Your localized design will be downloaded as a separate page. 
+
 
 ##### Setting font settings
 
@@ -48,10 +48,13 @@ Feature requests and feedback
 
 
 Ping us on Twitter or send a note to hello@qordoba.com.
+
+
 ### How to update 
 
 Go to the Sketch Plugin Directory and replace the Qordoba.sketchplugin file with the new one, which you’ll always be able to find on this Github page.
-.
+
+
 ### Bug reports 
 Sketch generator allows you quickly create dummy data such as avatars, names, geo location data etc.
  
