@@ -1,0 +1,93 @@
+{
+  "name": "Qordoba i18n",
+  "description": "Integration with Qordoba Translation Platform",
+  "author": "Qordoba",
+  "homepage": "https://qordoba.com",
+  "version": 1.4,
+  "identifier": "com.qordoba.sketch.plugin",
+  "compatibleVersion": 3,
+  "bundleVersion": 1,
+  "commands": [
+    {
+      "name": "Login or Logout to Qordoba",
+      "identifier": "login",
+      "script": "authenticate.js",
+      "shortcut": ""
+    },
+    {
+      "name": "Send All Artboards to Qordoba",
+      "identifier": "allartboards",
+      "shortcut": "",
+      "script": "artboards-all.js"
+    },
+    {
+      "name": "Send Selected Artboards to Qordoba",
+      "identifier": "selectedartboards",
+      "shortcut": "",
+      "script": "artboards-selected.js"
+    },
+    {
+      "name": "Upload All Pages to Qordoba",
+      "identifier": "uploadallpages",
+      "shortcut": "cmd alt 4",
+      "script": "upload-all-pages.js"
+    },
+    {
+      "name": "Upload Current Page to Qordoba",
+      "identifier": "uploadcurrentpage",
+      "shortcut": "cmd alt 5",
+      "script": "upload-current-page.js"
+    },
+    {
+      "name": "Fetch Translation for Current Page",
+      "identifier": "translatecurrentpage",
+      "shortcut": "cmd alt 6",
+      "script": "translate-current-page.js"
+    },
+    {
+      "name": "Fetch Translation for All Pages",
+      "identifier": "translateallpages",
+      "shortcut": "cmd alt 7",
+      "script": "translate-all-pages.js"
+    },
+    {
+      "name": "Default Language Settings",
+      "identifier": "language_config",
+      "shortcut": "cmd alt 9",
+      "script": "config.js"
+    },
+    {
+      "name": "Report a bug",
+      "identifier": "support",
+      "script": "support.js",
+      "shortcut": ""
+    },
+    {
+      "name": "Check for updates",
+      "identifier": "updates",
+      "script": "updates.js",
+      "shortcut": "",
+    },
+    {
+      "name": "Exclude Texts from Symbols",
+      "identifier": "exclode_symbols",
+      "script": "exclude-symbols.js",
+      "shortcut": "",
+    }
+  ],
+  "menu" : {
+  "title": "Qordoba",
+  "items": [
+    "login",
+    "uploadcurrentpage",
+    "translatecurrentpage",
+    "language_config",
+    {
+       "title": "Support & Updates",
+       "items": [
+         "support"
+       ]
+     }
+    ]
+  }
+}
