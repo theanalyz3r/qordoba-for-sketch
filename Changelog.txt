@@ -1,0 +1,9 @@
+V 1.4.3
+* update the projects list, project id is added to the list to make sure it’s unique
+
+V 1.4.4
+* De-attach the generated page form the document symbols, this should solve the skecth bug regards exclude text layers from symbol.
+* Check exclude text layers from symbol for the layers in Symbols beside to the page layers.
+* For RTL languages the plugin will auto adjust the generated layers alignment.
+* Fix language menu is not updated until you change the project.
+* Fix language settings page on 13" screens
