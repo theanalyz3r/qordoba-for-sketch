@@ -29,9 +29,7 @@ added to the end of the Page name within Qordoba.
 
 ![Alt text](https://storage.googleapis.com/storage.qordoba.com/Downloading.gif " Download a translated page from Qordoba")
 
-
-To download the translation of a Page, go to Plugins → Qordoba → Download Current Page. Choose what language you want to download (this is defined in your Qordoba project settings). Ta da! Your localized design will be downloaded as a separate page. 
-
+To download the translation of a Page, go to Plugins → Qordoba → Download Current Page. Choose what language you want to download (this is defined in your Qordoba project settings). Ta da! Your localized design will be downloaded as a separate page. If you’ve downloaded an RTL language, the text layers will automatically be right-justified.
 
 ##### Setting font settings
 
