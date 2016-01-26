@@ -1,6 +1,6 @@
 # Qordoba for Sketch 
 
-Qordoba’s Sketch plugin makes it easier for design teams to work and iterate on internationalized products.
+Qordoba’s Sketch plugin allows designers to translate their mockups to other languages, making product internationalization easier.
 
 
 # Installation 
