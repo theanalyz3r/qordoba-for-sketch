@@ -225,41 +225,6 @@ function getApiKeyFromServer(organizationId,context) {
 }
 
 
-
-/**
- *
- * Accept Machine Transltions from the Step 1
- *
-**/
-function acceptMT(projectId,pageId,context) {
-		var doc = context.document
-		var token = utils.getActiveTokenFromComputer(context)
-
-		sketchLog(context,"acceptMT(Projects:"+projectId+",Page:"+pageId+")")
-		var url = [NSURL URLWithString:rootAppUrl + "projects/"+projectId+"/pages/"+pageId+"/translations/bulk_save"];
-    
-        var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:120]
-		[request setHTTPMethod:"GET"]
-		[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
-		[request setValue:token forHTTPHeaderField:"X-AUTH-TOKEN"]
-
-		var error = nil;                     
-		var response = nil;
-		var data = [NSURLConnection sendSynchronousRequest:request returningResponse:response error:error];
-        if (error == nil && data != nil){	
-				var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil]
-				if(res == nil || res.errMessage != nil){
-					//dealWithErrors(context,data)
-					log(res.errMessage)
-				}else{
-				  	log(res.result)
-				}
-			} else {
-				log("error")
-			}
-			return false;	
-}
-
 /**
  *
  * upload original file to the server 
@@ -279,7 +244,7 @@ function postFile(context, path, organizationId, projectId, filename,version) {
 
 		var task = NSTask.alloc().init()
 		task.setLaunchPath("/usr/bin/curl");
-		var args = NSArray.arrayWithObjects("-v", "POST", "--header", "Content-Type: multipart/form-data", "--header", "X-AUTH-TOKEN: " + token, "--header", "user_key: " + token,"-F",'file_names=[{"upload_id":"","file_name":"'+filename+'"}]', "-F", "Content-Disposition: form-data; name=file; filename=" + filename + "; Content-Type=image/png;", "-F", "file=@" + path, rootAppUrl+"projects/"+projectId+"/files", nil);
+		var args = NSArray.arrayWithObjects("-v", "POST", "--header", "Content-Type: multipart/form-data", "--header", "X-AUTH-TOKEN: " + token, "--header", "user_key: " + token,"-F",'file_names=[{"upload_id":"","file_name":"'+filename+'"}]', "-F", "Content-Disposition: form-data; name=file; filename=" + filename + "; Content-Type=image/png;", "-F", "file=@" + path, rootAppUrl+"projects/"+projectId+"/files?smart-suggest=true", nil);
 		log(args)
 		task.setArguments(args);
 		var outputPipe = [NSPipe pipe];
