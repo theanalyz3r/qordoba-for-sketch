@@ -496,7 +496,6 @@ function uploadPages(all, organization,project, context) {
 		var fileId = postFile(context,filePath,organization.id,project.id,pageName, newVersion)
 
 		if(fileId){
-			acceptMT(project.id,fileId.fileId,context)
 			//translate.excludeTextLayersFromSymbol(context,page)
 			utils.saveFileIdForPage(project.id,documentName,page,fileId,context)		
 		}
