@@ -14,9 +14,9 @@ function loginWithUsernameAndPassword(email, password, context){
 **/
 function getProjectsArray(organizationId,context) {
 	var token = utils.getActiveTokenFromComputer(context)
-	//log("token is: " + token)
-	var url = [NSURL URLWithString:rootAppUrl + "organizations/"+organizationId+"/regex_projects/sketch"];
-	//var url = [NSURL URLWithString:rootAppUrl + "organizations/"+organizationId+"/projects"];
+	
+	var url = [NSURL URLWithString:rootAppUrl + "organizations/"+organizationId+"/projects/by_type/7"];
+	
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 	[request setHTTPMethod:"GET"]
 	[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
@@ -38,7 +38,6 @@ function getProjectsArray(organizationId,context) {
 		  } else {
 			  if(res.count() > 0){
 			   	var projects = [];
-			   	log(res.projects)
 			   	for (var i = 0; i < res.projects.count(); i++) {
 			   		var project = res.projects[i]
 			   		if(project.status == 1){
