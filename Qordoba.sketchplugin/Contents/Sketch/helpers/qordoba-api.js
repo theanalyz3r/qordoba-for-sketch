@@ -1,5 +1,6 @@
 @import "utils.js"
 @import "files.js"
+@import "framework-utils/MochaJSDelegate.js"
 
 var rootAppUrl = "https://app.qordoba.com/api/"
 
@@ -16,7 +17,9 @@ function getProjectsArray(organizationId,context) {
 	var token = utils.getActiveTokenFromComputer(context)
 	
 	var url = [NSURL URLWithString:rootAppUrl + "organizations/"+organizationId+"/projects/by_type/7"];
-	
+	log("url is: " + url)
+	log("token is: " + token)
+	//var url = [NSURL URLWithString:rootAppUrl + "organizations/"+organizationId+"/projects"];
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 	[request setHTTPMethod:"GET"]
 	[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
@@ -38,15 +41,14 @@ function getProjectsArray(organizationId,context) {
 		  } else {
 			  if(res.count() > 0){
 			   	var projects = [];
+			   	log(res.projects)
 			   	for (var i = 0; i < res.projects.count(); i++) {
 			   		var project = res.projects[i]
-			   		if(project.status == 1){
 			   			projects.push({
 			   				name: project.id+ " - " + project.name, 
 			   				id: project.id,
 			   				targetLanguages: project.target_languages
 			   			})
-			   		}
 			   	}
 				utils.saveOrganizationProjects(organizationId,projects)
 			   	return projects;
@@ -131,10 +133,11 @@ function getTokenFromServer(email,password, context){
 		var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 		[request setHTTPMethod:"PUT"]
 		[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
-		
+		var remember = true;
 		var tmp = [[NSDictionary alloc] initWithObjectsAndKeys:
 		                     email, @"username",
 		                     password, @"password",
+		                     remember, @"remember",
 		                     nil];
 		
 		var error = nil;                     
@@ -157,7 +160,6 @@ function getTokenFromServer(email,password, context){
 				  	var organizations = res.loggedUser.organizations
 				  	//Show Welcome Messages		
 				  	[doc showMessage: "Welcome " + userName + "!!"]		
-				  	//TODO get the list of organizations				  	
 				  	if(token){
 				  			sketchLog(context,"Token exists and gets returned") 
 				  			
@@ -230,20 +232,17 @@ function getApiKeyFromServer(organizationId,context) {
  *
 **/
 function postFile(context, path, organizationId, projectId, filename,version) {
-		var token = utils.getActiveApiKeyFromComputer(organizationId,context)
+		var token = utils.getActiveTokenFromComputer(organizationId,context)
 		if(!token) {
 			utils.fireError("Invalid Token", "Please make sure you have a valid login and API access.")
 			return false;
 		}
-		log(token)
 		var doc = context.document
 		var dataImg = [[NSFileManager defaultManager] contentsAtPath:path];
-		
 		var postLength = [dataImg length].toString()
-
 		var task = NSTask.alloc().init()
 		task.setLaunchPath("/usr/bin/curl");
-		var args = NSArray.arrayWithObjects("-v", "POST", "--header", "Content-Type: multipart/form-data", "--header", "X-AUTH-TOKEN: " + token, "--header", "user_key: " + token,"-F",'file_names=[{"upload_id":"","file_name":"'+filename+'"}]', "-F", "Content-Disposition: form-data; name=file; filename=" + filename + "; Content-Type=image/png;", "-F", "file=@" + path, rootAppUrl+"projects/"+projectId+"/files?smart-suggest=true", nil);
+		var args = NSArray.arrayWithObjects("-v", "POST", "--header", "Content-Type: multipart/form-data", "--header", "X-AUTH-TOKEN: " + token, "--header", "user_key: " + token,"-F",'file_names=[{"upload_id":"","file_name":"'+filename+'"}]', "-F", "Content-Disposition: form-data; name=file; filename=" + filename + "; Content-Type=image/png;", "-F", "file=@" + path, rootAppUrl+"projects/"+projectId+"/user_upload_files?smart-suggest=true", nil);
 		log(args)
 		task.setArguments(args);
 		var outputPipe = [NSPipe pipe];
@@ -286,7 +285,7 @@ function postFile(context, path, organizationId, projectId, filename,version) {
  *
 **/
 function downloadFileNSUrlConnection(context, organizationId, projectId, languageId, fileId) {
-	var token = utils.getActiveApiKeyFromComputer(organizationId,context)
+	var token = utils.getActiveTokenFromComputer(context)
 	var url = [NSURL URLWithString:rootAppUrl + "projects/" + projectId + "/languages/"+ languageId + "/files/" + fileId];
 	NSLog("token is: " + token)
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
@@ -310,4 +309,77 @@ function downloadFileNSUrlConnection(context, organizationId, projectId, languag
 		dealWithErrors(context,data)
 	}
 	return false;
+}
+
+
+function downloadFileNSUrlConnectionAsync(context, organizationId, projectId, languageId, fileId, downloadCallback) {
+	var token = utils.getActiveTokenFromComputer(context)
+	var url = [NSURL URLWithString:rootAppUrl + "projects/" + projectId + "/languages/"+ languageId + "/files/" + fileId];
+	NSLog("token is: " + token)
+	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
+	[request setHTTPMethod:"GET"]
+	[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
+	[request setValue:token forHTTPHeaderField:"X-AUTH-TOKEN"]
+	[request setValue:token forHTTPHeaderField:"user_key"]
+
+	COScript.currentCOScript().setShouldKeepAround_(true);
+	var delegate = new MochaJSDelegate(null);
+
+	// delegate.setHandlerForSelector("connectionDidFinishLoading:", function(connection){
+	// });
+
+	// delegate.setHandlerForSelector("connection:didReceiveResponse:", function(connection, response){
+	// });
+
+	delegate.setHandlerForSelector("connection:didReceiveData:", function(connection, data) {
+		theResponseText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+		jsonObject = fileHelper.csvToJson(theResponseText)
+		downloadCallback(jsonObject)
+	});
+
+	delegate.setHandlerForSelector("connection:didFailWithError:", function(connection, error){
+		downloadCallback(error)
+	});
+
+	var conne = [NSURLConnection connectionWithRequest:request delegate:delegate.getClassInstance()];
+	[conne start];
+}
+
+
+/**
+ *
+ * Get User Status 
+ *
+**/
+function getUserStatus(context) {
+		var doc = context.document
+		var token = utils.getActiveTokenFromComputer(context)
+
+		sketchLog(context,"getUserStatus()")
+		var url = [NSURL URLWithString:rootAppUrl + "user/status"];
+    
+        var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
+		[request setHTTPMethod:"GET"]
+		[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
+		[request setValue:token forHTTPHeaderField:"X-AUTH-TOKEN"]
+
+		var error = nil;                     
+		var response = nil;
+		var data = [NSURLConnection sendSynchronousRequest:request returningResponse:response error:error];
+	
+        if (error == nil && data != nil){	
+				var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil]
+				if(res == nil || res.errMessage != nil){
+					//dealWithErrors(context,data)
+					return "free";
+				}else{
+				  	var userStatus = res.user_status
+				  	if(userStatus){
+							userStatus;
+						} else {
+							"free";
+						}
+				}
+		}
+		return "free";	
 }

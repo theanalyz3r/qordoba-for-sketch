@@ -3,13 +3,13 @@
   "description": "Integration with Qordoba Translation Platform",
   "author": "Qordoba",
   "homepage": "https://qordoba.com",
-  "version": 1.4,
+  "version": 2.0,
   "identifier": "com.qordoba.sketch.plugin",
   "compatibleVersion": 3,
   "bundleVersion": 1,
   "commands": [
     {
-      "name": "Login or Logout to Qordoba",
+      "name": "Login / Logout",
       "identifier": "login",
       "script": "authenticate.js",
       "shortcut": ""
@@ -39,7 +39,7 @@
       "script": "upload-current-page.js"
     },
     {
-      "name": "Fetch Translation for Current Page",
+      "name": "Download Translation for Current Page",
       "identifier": "translatecurrentpage",
       "shortcut": "cmd alt 6",
       "script": "translate-current-page.js"

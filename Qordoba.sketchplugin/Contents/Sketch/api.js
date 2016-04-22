@@ -1,3 +1,6 @@
+// Needs to be loaded first!
+@import 'framework-utils/qordoba-framework.js'
+
 @import 'helpers/error-logging.js'
 @import 'helpers/files.js'
 @import 'helpers/utils.js'
@@ -8,9 +11,10 @@
 @import 'helpers/qordoba-api.js'
 @import 'helpers/texts.js'
 @import 'helpers/forms.js'
-var app = [NSApplication sharedApplication];
-// Plugin Calls
 
+var app = [NSApplication sharedApplication];
+
+// Plugin Calls
 function fireLoginWindowWithContext(context){
 	// create window
 	var loginWindow = [[NSWindow alloc] init]
@@ -116,7 +120,7 @@ function fireLoginWindowWithContext(context){
 
 	//Create Marvel Button
 	
-	[createQordobaButton setTitle:"Create account"]
+	[createQordobaButton setTitle:"No account? Sign up"]
 	[createQordobaButton setBezelStyle:NSRoundedBezelStyle]
 	[createQordobaButton setCOSJSTargetFunction:function(sender) {
 	    var url = [NSURL URLWithString:@"https://app.qordoba.com/"];
@@ -448,8 +452,7 @@ function fireTranslateArtboards(all, context){
 	var project = utils.getProject()
 	var language = utils.getTargetLanguage()
 	var organization = utils.getOrganization()
-	var apiKey = utils.getActiveApiKeyFromComputer(organization.id, context)
-	if(!project || !language || !organization || !apiKey){
+	if(!project || !language || !organization){
 		fireConfiguration(context)
 		return;
 	}

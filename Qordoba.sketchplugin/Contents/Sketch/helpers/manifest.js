@@ -1,5 +1,4 @@
 var manifest = {
-
     "getManifestFilePath": function(context){
         var scriptFullPath = context.scriptPath
         var directoryPlugin = [scriptFullPath stringByDeletingLastPathComponent]
