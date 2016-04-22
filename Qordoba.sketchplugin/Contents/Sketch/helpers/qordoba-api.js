@@ -41,7 +41,7 @@ function getProjectsArray(organizationId,context) {
 			   	log(res.projects)
 			   	for (var i = 0; i < res.projects.count(); i++) {
 			   		var project = res.projects[i]
-			   		if(project.status == 1 && project.content_type.name == "Strings"){
+			   		if(project.status == 1){
 			   			projects.push({
 			   				name: project.id+ " - " + project.name, 
 			   				id: project.id,
