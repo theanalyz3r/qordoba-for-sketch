@@ -754,10 +754,10 @@ function fireUpdate(context, showNoUpdate) {
 		sketchLog(context,"Sketch " + newestVersion + " is currently the newest version available.");
   } else {
     var alert = [[NSAlert alloc] init]
-    [alert setMessageText:"A new version of qordoba Sketch is available."]
-    [alert setInformativeText:"Download the new plugin on GitHub"]
+    [alert setMessageText:"A new version "+newestVersion+" of Qordoba for Sketch is available."]
+    [alert setInformativeText:"Download the new plugin on GitHub."]
     [alert addButtonWithTitle:'Close']
-    [alert addButtonWithTitle:'Download our update']
+    [alert addButtonWithTitle:'Download the update']
  
 	var responseCode = [alert runModal]
 	if(responseCode == "1001"){
