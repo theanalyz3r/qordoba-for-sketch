@@ -6,11 +6,11 @@
 	<dict>
 		<key>Resources/DownloadView.nib</key>
 		<data>
-		4ZKwkOF4tvRyQAjySVohsyonfh8=
+		DhsCqmUgOGe/3qvURbvHzHSzDxI=
 		</data>
 		<key>Resources/Info.plist</key>
 		<data>
-		YHNWRRKODCDh2ClAv271AyVVwQE=
+		qAuX7RrHegXjCgnGqKUW+zyg7S4=
 		</data>
 		<key>Resources/LogoQ.png</key>
 		<data>
@@ -18,7 +18,7 @@
 		</data>
 		<key>Resources/UploadView.nib</key>
 		<data>
-		GzsjCKTxNNX7QuJPeQFiSytNCIU=
+		yV5bvYXDdlotaVcGOhsfkb2WZqw=
 		</data>
 		<key>Resources/gopro.png</key>
 		<data>
@@ -40,45 +40,115 @@
 	<key>files2</key>
 	<dict>
 		<key>Headers/Sketch.h</key>
-		<data>
-		8NOMNPW2/H1P1/oXIxHA3jguWns=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			8NOMNPW2/H1P1/oXIxHA3jguWns=
+			</data>
+			<key>hash2</key>
+			<data>
+			0dYrIYCM5WFpmvTdmz3bZtFjEAgtFhMDUBTfC2usj4g=
+			</data>
+		</dict>
 		<key>Modules/module.modulemap</key>
-		<data>
-		9B24oLQJHtbwrBuTCCyoshbv5Ig=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			9B24oLQJHtbwrBuTCCyoshbv5Ig=
+			</data>
+			<key>hash2</key>
+			<data>
+			2VSNVUcNdtOP4Cc55K8IPEFyUKCxNN793pgdcWxV6sk=
+			</data>
+		</dict>
 		<key>Resources/DownloadView.nib</key>
-		<data>
-		4ZKwkOF4tvRyQAjySVohsyonfh8=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			DhsCqmUgOGe/3qvURbvHzHSzDxI=
+			</data>
+			<key>hash2</key>
+			<data>
+			8B7yf7K6zR98CQgCbQmsoC5aai+OZYkezwi+otwPj+4=
+			</data>
+		</dict>
 		<key>Resources/Info.plist</key>
-		<data>
-		YHNWRRKODCDh2ClAv271AyVVwQE=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			qAuX7RrHegXjCgnGqKUW+zyg7S4=
+			</data>
+			<key>hash2</key>
+			<data>
+			NdVVqZMY67yjCxOEsVMuw2JEPReClZD5E0NFXaCpzq0=
+			</data>
+		</dict>
 		<key>Resources/LogoQ.png</key>
-		<data>
-		N2fn30cJtTcIKVnHb0Bg+/ODkxM=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			N2fn30cJtTcIKVnHb0Bg+/ODkxM=
+			</data>
+			<key>hash2</key>
+			<data>
+			1Oh4zfCnNPDv7f+BEJNFESdjOuhJdRdIxeA39CkHId0=
+			</data>
+		</dict>
 		<key>Resources/UploadView.nib</key>
-		<data>
-		GzsjCKTxNNX7QuJPeQFiSytNCIU=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			yV5bvYXDdlotaVcGOhsfkb2WZqw=
+			</data>
+			<key>hash2</key>
+			<data>
+			vRfuesgvcJ6+ghIT3n7xJx8BYEZ/iJ4EVBvCGaFZ2e0=
+			</data>
+		</dict>
 		<key>Resources/gopro.png</key>
-		<data>
-		BBKnDhUY380O7oY/NBe+KinyBhk=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			BBKnDhUY380O7oY/NBe+KinyBhk=
+			</data>
+			<key>hash2</key>
+			<data>
+			S9dj6p8Y91wcOYdatQOdOQur4cFKhZyxdhaCLCMotHA=
+			</data>
+		</dict>
 		<key>Resources/gopro_base.png</key>
-		<data>
-		cfdOw0fCMATh5EyA62kuCpNUg7k=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			cfdOw0fCMATh5EyA62kuCpNUg7k=
+			</data>
+			<key>hash2</key>
+			<data>
+			XAHE2nG8g7sCpfxSAQoMpw1tr1yA95qVIbCeZh8iowc=
+			</data>
+		</dict>
 		<key>Resources/gopro_clicked.png</key>
-		<data>
-		GvZn/4jdgzFUWXd1MU5NS+Yp49A=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			GvZn/4jdgzFUWXd1MU5NS+Yp49A=
+			</data>
+			<key>hash2</key>
+			<data>
+			7nyUYKImpn8uo5gCfOJR1KZqc1d/yICr7w+ePk30Uy8=
+			</data>
+		</dict>
 		<key>Resources/logo.tiff</key>
-		<data>
-		u3WxRHKZq7V0aO485vjUea15trM=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			u3WxRHKZq7V0aO485vjUea15trM=
+			</data>
+			<key>hash2</key>
+			<data>
+			RFufOuxuXJhNj6qN7fIUqb+SSnynuPPpZTBkR2ozpOo=
+			</data>
+		</dict>
 	</dict>
 	<key>rules</key>
 	<dict>

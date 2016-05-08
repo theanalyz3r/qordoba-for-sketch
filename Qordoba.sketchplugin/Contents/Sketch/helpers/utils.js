@@ -307,6 +307,31 @@ var utils = {
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
 
+  "getLastVersionChecked": function(context){
+    var last = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_last_version_checked"];
+    if (last) {
+      return last;
+    } else {
+      return [NSDate date];
+    }
+  },
+  "checkLastVersionChecked": function(context){
+    var last = this.getLastVersionChecked(context);
+    var dateNow = [NSDate date];
+    var secondsBetween = [dateNow timeIntervalSinceDate:last];
+    //if(secondsBetween/86400 > 1){
+    if(secondsBetween > 100){
+      return true;
+    }else {
+      return false;
+    }
+  },
+
+  "setLastVersionChecked": function(datetime,context){
+    [[NSUserDefaults standardUserDefaults] setObject:datetime forKey:"QUSER_qordoba_last_version_checked"]
+    [[NSUserDefaults standardUserDefaults] synchronize]
+  },
+
   "getLastUsedOrganization": function(context){
     var last = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba last used organization"];
     if (last) {
@@ -418,10 +443,11 @@ var utils = {
         // Try to detach this layer from shared symbol and/or shared style and/or text style
         if (layer.isSharedObject()) {
             if (layer.respondsToSelector("sharedObjectID")) {
-                var symbol = symbolsContainer.symbolForInstance(layer)
-                if (symbol) {
-                    symbol.unregisterInstance(layer)
-                }
+                //TODO Check Symbol issue
+                //var symbol = symbolsContainer.symbolForInstance(layer)
+                //if (symbol) {
+                //    symbol.unregisterInstance(layer)
+                //}
             }
         }
         // Recursively try to detach all childs

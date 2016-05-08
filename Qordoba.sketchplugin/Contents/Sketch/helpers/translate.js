@@ -111,6 +111,8 @@ var translate = {
 
         //De-attach the new page from all symbols 
         var layers = [newPage children];
+        //TODO check the symbolsContainer issue
+        //TypeError: symbolsContainer.symbolForInstance is not a function
         for (var i = 0; i < layers.count(); i++) {
            utils.detachFromSymbolAndStyle(context,symbolsContainer,layers[i])
         }

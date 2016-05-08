@@ -1,4 +1,5 @@
 @import 'api.js'
+@import 'api_v2.js'
 
 var width = 500;
 var height = 400;
@@ -273,7 +274,9 @@ function fireConfiguration(context){
 }
 
 var onRun = function (context) {
-	if (utils.getActiveTokenFromComputer(context) == false) {
+	if(utils.checkLastVersionChecked(context) == true){
+		fireUpdate(context);
+ 	} else if (utils.getActiveTokenFromComputer(context) == false) {
 		fireLoginWindowWithContext(context)
 	} else {
 		fireConfiguration(context)

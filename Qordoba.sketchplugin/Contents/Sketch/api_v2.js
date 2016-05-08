@@ -1,6 +1,5 @@
 // Needs to be loaded first!
 @import 'framework-utils/qordoba-framework.js'
-
 @import 'helpers/error-logging.js'
 @import 'helpers/files.js'
 @import 'helpers/utils.js'
@@ -18,7 +17,7 @@
 **/
 function fireTranslateForm(all,context){
 	var doc = context.document
-	sketchLog(context,"fireConfiguration()");
+	sketchLog(context,"fireTranslateForm()");
 
 	var currentPage = [doc currentPage]
 	var pageName = [currentPage name];
@@ -86,13 +85,13 @@ function fireTranslateForm(all,context){
 	});
 	
 
-	var progressBar = false;//nibUI.progressBar;
+	//var progressBar = false;//nibUI.progressBar;
 
-
+	
 	var orgDropdown = nibUI.organizationDropdown;
 	  [orgDropdown addItemsWithTitles:organizationNames]
 	  [orgDropdown selectItemAtIndex:organizationIndex]
-	  var obj = this
+	  //var obj = this
 	  [orgDropdown setCOSJSTargetFunction:function(sender) {
 	    var organizationIndex = [sender indexOfSelectedItem]
 	    var organization = organizations[organizationIndex]
@@ -108,7 +107,6 @@ function fireTranslateForm(all,context){
 
 	    [languageDropdown removeAllItems]
 	  }]]
-	[[windowSendArtboards contentView] addSubview:orgDropdown]
 
 
 	//project
@@ -130,7 +128,7 @@ function fireTranslateForm(all,context){
 				project = projects[i];
 			}
 	}
-
+	
 	var projectDropdown = nibUI.projectDropdown;
 	  [projectDropdown addItemsWithTitles:projectNames]
 	  [projectDropdown selectItemAtIndex:projectIndex]
@@ -143,7 +141,7 @@ function fireTranslateForm(all,context){
 	    [languageDropdown addItemsWithTitles:languageNames]
 	    [languageDropdown selectItemAtIndex:0]
 	  }]]
-	[[windowSendArtboards contentView] addSubview:projectDropdown]
+	//[[windowSendArtboards contentView] addSubview:projectDropdown]
 
 	///Language
 	var languages = project.targetLanguages	
@@ -160,17 +158,17 @@ function fireTranslateForm(all,context){
 				languageIndex = i;
 			}
 	}
-	
+
 	var languageDropdown = nibUI.languageDropdown;
 	  [languageDropdown addItemsWithTitles:languageNames]
 	  [languageDropdown selectItemAtIndex:languageIndex]
-	[[windowSendArtboards contentView] addSubview:languageDropdown]
+	//[[windowSendArtboards contentView] addSubview:languageDropdown]
 	
 	
 	var sendButton = nibUI.downloadButton
 	var cancelButton = nibUI.cancelButton
-
-
+	
+	
 	nibUI.attachTargetAndAction(sendButton, function() {
 		languageIndex = [languageDropdown indexOfSelectedItem]
 		language = languages[languageIndex]
@@ -201,6 +199,7 @@ function fireTranslateForm(all,context){
 	    [app stopModal]
 	});
 	
+	
 	[windowSendArtboards setDefaultButtonCell:[sendButton cell]];
 	[app runModalForWindow:windowSendArtboards]
 }
@@ -212,8 +211,8 @@ function fireTranslateForm(all,context){
 **/
 function fireUploadForm(all, context){
 	var doc = context.document
-	sketchLog(context,"fireConfiguration()");
-
+	sketchLog(context,"fireUploadForm()");
+	
 	var currentPage = [doc currentPage]
 	var pageName = [currentPage name];
 	var windowTitle = "Upload Page '"+pageName+"' to Qordoba"
@@ -256,7 +255,6 @@ function fireUploadForm(all, context){
 
 	var width = 468;
 	var height = 303;
-	var shifX
 
 	var windowSendArtboards = [[NSWindow alloc] init]
 	[windowSendArtboards setFrame:NSMakeRect(0, 0, width, height) display:true]

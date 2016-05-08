@@ -699,6 +699,76 @@ function fireError(title,text){
 		[app displayDialog:text withTitle:title]
 }
 
+
+
+var updatesChecker = {
+	"getNewestVersionNumber": function(context){
+       
+       	sketchLog(context,"updatesChecker.getNewestVersionNumber()")
+       	       	
+       	var url = [NSURL URLWithString:"https://raw.githubusercontent.com/Qordobacode/qordoba-for-sketch/master/Qordoba.sketchplugin/Contents/Sketch/manifest.json"];
+
+       	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:30]
+       	[request setHTTPMethod:"GET"]
+       	
+       	var response = nil;
+       	var error = nil;
+       	sketchLog(context,"NSURLConnection updatesChecker.getNewestVersionNumber()")
+       	var data = [NSURLConnection sendSynchronousRequest:request returningResponse:response error:error];
+       	
+       	if (error == nil && data != nil)
+       	{	    
+       	  var errorJson;
+       	    		
+       		var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:errorJson]
+       		
+       		if(errorJson == nil){
+            if(res.version){
+       			  return res.version
+            }
+       		} else {
+       			sketchLog(context,"NSURLConnection updatesChecker.getNewestVersionNumber() Convert to JSON failed")
+       			return false
+       		}
+
+       	} 
+
+       	sketchLog(context,"updatesChecker.getNewestVersionNumber() failed")
+        [app displayDialog:"Try again later..." withTitle:"Could not contact GitHub properly."]
+       	return false
+
+    }
+}
+
+function fireUpdate(context, showNoUpdate) {
+  var newestVersion = updatesChecker.getNewestVersionNumber(context)
+  var pluginVersion = manifest.getPluginVersion(context)
+  sketchLog(context,"Show Updates: " + showNoUpdate);
+  var dateNow = [NSDate date];
+  utils.setLastVersionChecked(dateNow,context);
+
+  sketchLog(context,"newestVersion: (" + newestVersion + "),pluginVersion: (" + pluginVersion + ")");
+  if (parseFloat(newestVersion) == parseFloat(pluginVersion) && showNoUpdate == true) {
+    [app displayDialog:"Sketch " + newestVersion + " is currently the newest version available." withTitle:"You’re up-to-date!"]
+  } else if(parseFloat(newestVersion) == parseFloat(pluginVersion)) {
+		sketchLog(context,"Sketch " + newestVersion + " is currently the newest version available.");
+  } else {
+    var alert = [[NSAlert alloc] init]
+    [alert setMessageText:"A new version of qordoba Sketch is available."]
+    [alert setInformativeText:"Download the new plugin on GitHub"]
+    [alert addButtonWithTitle:'Close']
+    [alert addButtonWithTitle:'Download our update']
+ 
+	var responseCode = [alert runModal]
+	if(responseCode == "1001"){
+	     var url = [NSURL URLWithString:@"https://github.com/Qordobacode/qordoba-for-sketch/releases/latest"];
+	      if( ![[NSWorkspace sharedWorkspace] openURL:url] ){
+	          sketchLog(context,"Failed to open url:" + [url description])
+	      } 
+	}
+  } 
+}
+
 function sketchLog(context,string){
 	if(utils.getDebugSettingFromComputer(context) == 1)
 	{

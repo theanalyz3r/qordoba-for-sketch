@@ -17,8 +17,8 @@ function getProjectsArray(organizationId,context) {
 	var token = utils.getActiveTokenFromComputer(context)
 	
 	var url = [NSURL URLWithString:rootAppUrl + "organizations/"+organizationId+"/projects/by_type/7"];
-	log("url is: " + url)
-	log("token is: " + token)
+	//log("url is: " + url)
+	//log("token is: " + token)
 	//var url = [NSURL URLWithString:rootAppUrl + "organizations/"+organizationId+"/projects"];
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 	[request setHTTPMethod:"GET"]
@@ -242,7 +242,7 @@ function postFile(context, path, organizationId, projectId, filename,version) {
 		var postLength = [dataImg length].toString()
 		var task = NSTask.alloc().init()
 		task.setLaunchPath("/usr/bin/curl");
-		var args = NSArray.arrayWithObjects("-v", "POST", "--header", "Content-Type: multipart/form-data", "--header", "X-AUTH-TOKEN: " + token, "--header", "user_key: " + token,"-F",'file_names=[{"upload_id":"","file_name":"'+filename+'"}]', "-F", "Content-Disposition: form-data; name=file; filename=" + filename + "; Content-Type=image/png;", "-F", "file=@" + path, rootAppUrl+"projects/"+projectId+"/user_upload_files?smart-suggest=true", nil);
+		var args = NSArray.arrayWithObjects("-v", "POST", "--header", "Content-Type: multipart/form-data", "--header", "X-AUTH-TOKEN: " + token, "--header", "user_key: " + token,"-F",'file_names=[{"upload_id":"","file_name":"'+filename+'"}]', "-F", "Content-Disposition: form-data; name=file; filename=" + filename + "; Content-Type=image/png;", "-F", "file=@" + path, rootAppUrl+"projects/"+projectId+"/user_upload_files?smart-suggest=true&update=true", nil);
 		log(args)
 		task.setArguments(args);
 		var outputPipe = [NSPipe pipe];

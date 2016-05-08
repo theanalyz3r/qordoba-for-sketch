@@ -1,9 +1,11 @@
 @import 'api.js'
 
 var onRun = function (context) {
- 	
-	if (utils.getActiveTokenFromComputer(context) == false) {
+ 	if(utils.checkLastVersionChecked(context,false) == true){
+		fireUpdate(context);
+ 	}
 
+ 	if (utils.getActiveTokenFromComputer(context) == false) {
 		sketchLog(context,"Fire login window");
 		fireLoginWindowWithContext(context)
 	} else {
