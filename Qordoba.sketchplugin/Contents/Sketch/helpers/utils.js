@@ -319,8 +319,8 @@ var utils = {
     var last = this.getLastVersionChecked(context);
     var dateNow = [NSDate date];
     var secondsBetween = [dateNow timeIntervalSinceDate:last];
-    //if(secondsBetween/86400 > 1){
-    if(secondsBetween > 100){
+    //if(secondsBetween > 100){
+    if(secondsBetween/86400 > 1){
       return true;
     }else {
       return false;
