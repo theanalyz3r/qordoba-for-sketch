@@ -5,15 +5,9 @@ var QForms = {
 	"createDialog": function(context,title,message){
 		var alert = COSAlertWindow.new();
 		var pluginPath = context.scriptPath.substring(0, context.scriptPath.lastIndexOf('/'));
-		//var icon = NSImage.alloc().initByReferencingFile(pluginPath + '/Resources/logo.icns');
-		//alert.setIcon(icon);
-		//alert setIcon:icon
 		alert.setMessageText(title);
 		alert.setInformativeText(message);
 		// Name
-		//this.createTextFieldWithDefaultValue(context,alert,"Name:","");
-		// Interator
-		//this.createTextFieldWithDefaultValue(context,alert,"Starts Number Sequence From:","1");
 		var types = ['calm', 'gray', 'crazy'];
   		var typeSelect = this.createSelect(context,alert,"Arabic: ", types, 0);
 		// Actions buttons.

@@ -8,7 +8,11 @@
 @import 'helpers/utils.js'
 @import 'helpers/qordoba-api.js'
 @import 'helpers/controller.js'
+@import "helpers/qordoba-utils.js"
+@import "helpers/editor.js"
 @import 'api.js'
+
+
 
 /**
  *
@@ -25,18 +29,15 @@ function fireTranslateForm(all,context){
 	if(all){
 		translate.excludeAllTextLayers(context)
 	}else{
-		//windowTitle = texts.fetchCurrentWindowTitle
 		var currentPage = [doc currentPage]
-		// translate.excludeTextLayersFromSymbol(context,currentPage)
 		if(utils.isGeneratedPage(currentPage,context)){
 			fireError("Warning!", "This Page is the translated version. To fetch an updated version of the translation, please pull from the original Page.")
 			return ;
 		}
 	}
 
-
 	var width = 463;
-	var height = 365;
+	var height = 396;
 
 	var windowSendArtboards = [[NSWindow alloc] init]
 	[windowSendArtboards setFrame:NSMakeRect(0, 0, width, height) display:true]
@@ -45,11 +46,13 @@ function fireTranslateForm(all,context){
 	[windowSendArtboards setStyleMask:NSBorderlessWindowMask];
 	// Load UI from framework
 	loadCoreFramework(context, gFrameworkName);
-	COScript.currentCOScript().setShouldKeepAround_(true);
-	var nibUI = LoadNibFromFramework(context, 'DownloadView', ['organizationDropdown', 'projectDropdown','languageDropdown', 'cancelButton', 'downloadButton','goProButton','titleLabel']);
+	//COScript.currentCOScript().setShouldKeepAround_(true);
+	var nibUI = LoadNibFromFramework(context, 'DownloadView', ['organizationDropdown', 'projectDropdown','languageDropdown', 'cancelButton', 'downloadButton','goProButton','titleLabel','deatachOption','overrideOption']);
 
 	[[windowSendArtboards contentView] addSubview:nibUI.view];
 
+	var projects = [];
+	var organization = null;
 	// Organization
 	var organizations  = utils.getOrganizations()
 	var organizationsCount = [organizations count]
@@ -57,6 +60,7 @@ function fireTranslateForm(all,context){
 	if(!organization){
 		organization = [organizations objectAtIndex:0]
 	}
+	
 	var noOrganizations = (organizationsCount == 0)
 	var organizationIndex = 0
 	var organizationNames = []
@@ -83,19 +87,26 @@ function fireTranslateForm(all,context){
 	        sketchLog(context,"Failed to open url:" + [url description])
 	    }   
 	});
+
+	var detachOption = nibUI.deatachOption
+	var overrideOption = nibUI.overrideOption
+	nibUI.attachTargetAndAction(detachOption, function() {		
+		[overrideOption setState:NSOffState];   
+	});
 	
+	nibUI.attachTargetAndAction(overrideOption, function() {		
+		[detachOption setState:NSOffState];   
+	});
 
 	//var progressBar = false;//nibUI.progressBar;
-
-	
 	var orgDropdown = nibUI.organizationDropdown;
-	  [orgDropdown addItemsWithTitles:organizationNames]
-	  [orgDropdown selectItemAtIndex:organizationIndex]
-	  //var obj = this
-	  [orgDropdown setCOSJSTargetFunction:function(sender) {
-	    var organizationIndex = [sender indexOfSelectedItem]
-	    var organization = organizations[organizationIndex]
-	    var projects = getProjectsArray(organization.id,context)
+	[orgDropdown addItemsWithTitles:organizationNames]
+	[orgDropdown selectItemAtIndex:organizationIndex]
+	//var obj = this
+	[orgDropdown setCOSJSTargetFunction:function(sender) {
+		var organizationIndex = [sender indexOfSelectedItem]
+		organization = organizations[organizationIndex]
+		projects = getProjectsArray(organization.id,context)
 		var projectNames = []
 		for (i = 0; i < projects.length; ++i) {
 			projectNames.push(projects[i].name);
@@ -103,15 +114,15 @@ function fireTranslateForm(all,context){
 		projectIndex = 0
 		[projectDropdown removeAllItems]
 		[projectDropdown addItemsWithTitles:projectNames]
-	    [projectDropdown selectItemAtIndex:projectIndex]
+		[projectDropdown selectItemAtIndex:projectIndex]
 
-	    [languageDropdown removeAllItems]
-	  }]]
+		[languageDropdown removeAllItems]
+	}]]
+
 
 
 	//project
-
-	var projects = getProjectsArray(organization.id,context)
+	projects = getProjectsArray(organization.id,context)
 	var projectsCount = projects.length
 	var project = utils.getProject()
 	if(!project){
@@ -122,48 +133,47 @@ function fireTranslateForm(all,context){
 	var projectIndex = 0
 	var projectNames = []
 	for (i = 0; i < projectsCount; ++i) {
-			projectNames.push(projects[i].name);
-			if(project.id == projects[i].id){
-				projectIndex = i;
-				project = projects[i];
-			}
+		projectNames.push(projects[i].name);
+		if(project.id == projects[i].id){
+			projectIndex = i;
+			project = projects[i];
+		}
 	}
 	
 	var projectDropdown = nibUI.projectDropdown;
-	  [projectDropdown addItemsWithTitles:projectNames]
-	  [projectDropdown selectItemAtIndex:projectIndex]
-	  [projectDropdown setCOSJSTargetFunction:function(sender) {
-	   	projectIndex = [sender indexOfSelectedItem]
-	   	project = projects[projectIndex]
-	    [languageDropdown removeAllItems]
-	    languages = project.targetLanguages
-	    languageNames = utils.getNames(languages)
-	    [languageDropdown addItemsWithTitles:languageNames]
-	    [languageDropdown selectItemAtIndex:0]
-	  }]]
-	//[[windowSendArtboards contentView] addSubview:projectDropdown]
-
+	[projectDropdown addItemsWithTitles:projectNames]
+	[projectDropdown selectItemAtIndex:projectIndex]
+	[projectDropdown setCOSJSTargetFunction:function(sender) {
+		projectIndex = [sender indexOfSelectedItem]
+		projects = getProjectsArray(organization.id,context)
+		project = projects[projectIndex]
+		[languageDropdown removeAllItems]
+		languages = project.targetLanguages
+		languageNames = utils.getNames(languages)
+		[languageDropdown addItemsWithTitles:languageNames]
+		[languageDropdown selectItemAtIndex:0]
+	}]]
 	///Language
-	var languages = project.targetLanguages	
-	var languagesCount = [languages count]
-	var language = utils.getTargetLanguage()
-	if(!language){
-		language = languages[0]
-	}
 	var languageIndex = 0
 	var languageNames = []
-	for (i = 0; i < languagesCount; ++i) {
+	if(project){
+		var languages = project.targetLanguages
+		var languagesCount = [languages count]
+		var language = utils.getTargetLanguage()
+		if(!language){
+			language = languages[0]
+		}
+		for (i = 0; i < languagesCount; ++i) {
 			languageNames.push(languages[i].name);
 			if(language.id == languages[i].id){
 				languageIndex = i;
 			}
+		}
 	}
-
-	var languageDropdown = nibUI.languageDropdown;
-	  [languageDropdown addItemsWithTitles:languageNames]
-	  [languageDropdown selectItemAtIndex:languageIndex]
-	//[[windowSendArtboards contentView] addSubview:languageDropdown]
 	
+	var languageDropdown = nibUI.languageDropdown;
+	[languageDropdown addItemsWithTitles:languageNames]
+	[languageDropdown selectItemAtIndex:languageIndex]
 	
 	var sendButton = nibUI.downloadButton
 	var cancelButton = nibUI.cancelButton
@@ -172,13 +182,17 @@ function fireTranslateForm(all,context){
 	nibUI.attachTargetAndAction(sendButton, function() {
 		languageIndex = [languageDropdown indexOfSelectedItem]
 		language = languages[languageIndex]
-	   	
+		
+		var symbolOption = "detach";
+		if([overrideOption state]){
+			symbolOption = "override";
+		}
+
 		utils.saveTargetLanguage(language)
 		utils.saveProject(project)
 		utils.saveOrganization(organization)
-		getApiKeyFromServer(organization.id,context)
 		//Translate
-		controller.translatePages(all,organization,project,language, context)
+		controller.translateCurrentPage(organization,project,language, symbolOption, context)
 
 		[cancelButton setCOSJSTargetFunction:undefined]
 		[sendButton setCOSJSTargetFunction:undefined]
@@ -208,7 +222,7 @@ function fireTranslateForm(all,context){
  *
  *
  *
-**/
+ */
 function fireUploadForm(all, context){
 	var doc = context.document
 	sketchLog(context,"fireUploadForm()");
@@ -264,7 +278,7 @@ function fireUploadForm(all, context){
 
 	// Load UI from framework
 	loadCoreFramework(context, gFrameworkName);
-	COScript.currentCOScript().setShouldKeepAround_(true);
+	//COScript.currentCOScript().setShouldKeepAround_(true);
 	var nibUI = LoadNibFromFramework(context, 'UploadView', ['organizationDropdown', 'projectDropdown', 'cancelButton', 'uploadButton','goProButton','titleLabel']);
 
 
@@ -335,12 +349,10 @@ function fireUploadForm(all, context){
 		 	return ;
 		 }
 		 [sendButton setTitle:"Uploading ..."]
-
-		 getApiKeyFromServer(organization.id,context)
 		 utils.saveProject(project)
 		 utils.saveOrganization(organization)
 		 //upload pages
-		 controller.uploadPages(all, organization, project, context)
+		 controller.uploadCurrentPage(organization, project, context)
 
 		[cancelButton setCOSJSTargetFunction:undefined]
 		[sendButton setCOSJSTargetFunction:undefined]
@@ -364,11 +376,5 @@ function fireUploadForm(all, context){
 	[app runModalForWindow:windowSendArtboards]
 
 	nibUI.destroy();
-}
 
-
-function excludeSymbols(context){
-	translate.excludeAllTextLayers(context);
-	utils.excludeSymbols(context);
-	fireError("Success!", "Done!")
 }

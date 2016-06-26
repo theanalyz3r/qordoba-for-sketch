@@ -15,24 +15,6 @@
       "shortcut": ""
     },
     {
-      "name": "Send All Artboards to Qordoba",
-      "identifier": "allartboards",
-      "shortcut": "",
-      "script": "artboards-all.js"
-    },
-    {
-      "name": "Send Selected Artboards to Qordoba",
-      "identifier": "selectedartboards",
-      "shortcut": "",
-      "script": "artboards-selected.js"
-    },
-    {
-      "name": "Upload All Pages to Qordoba",
-      "identifier": "uploadallpages",
-      "shortcut": "cmd alt 4",
-      "script": "upload-all-pages.js"
-    },
-    {
       "name": "Upload Current Page to Qordoba",
       "identifier": "uploadcurrentpage",
       "shortcut": "cmd alt 5",
@@ -43,12 +25,6 @@
       "identifier": "translatecurrentpage",
       "shortcut": "cmd alt 6",
       "script": "translate-current-page.js"
-    },
-    {
-      "name": "Fetch Translation for All Pages",
-      "identifier": "translateallpages",
-      "shortcut": "cmd alt 7",
-      "script": "translate-all-pages.js"
     },
     {
       "name": "Default Language Settings",
@@ -69,10 +45,18 @@
       "shortcut": "",
     },
     {
-      "name": "Exclude Texts from Symbols",
-      "identifier": "exclode_symbols",
-      "script": "exclude-symbols.js",
-      "shortcut": "",
+      "name": "Set Selected Layer MaxWidth",
+      "identifier": "max_width",
+      "script": "misc.js",
+      "shortcut": "cmd alt k",
+      "handler" : "onMaxWidth"
+    },
+    {
+      "name": "Spec export",
+      "identifier": "spec-export",
+      "shortcut": "ctrl shift f",
+      "handler": "specExport",
+      "script": "misc.js"
     }
   ],
   "menu" : {
@@ -81,7 +65,9 @@
     "login",
     "uploadcurrentpage",
     "translatecurrentpage",
+    "-",
     "language_config",
+    "max_width",
     {
        "title": "Support & Updates",
        "items": [

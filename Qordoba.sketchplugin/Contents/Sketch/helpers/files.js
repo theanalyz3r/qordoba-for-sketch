@@ -1,5 +1,5 @@
 var fileHelper = {
-	"createFolderAtPath": function(context, pathString){
+	createFolderAtPath: function(context, pathString){
         var fileManager = [NSFileManager defaultManager]
     	if([fileManager fileExistsAtPath:pathString]){
     		return true
@@ -8,7 +8,7 @@ var fileHelper = {
     	}
     },
 
-    "readTextFromFile": function(context,filePath){
+    readTextFromFile: function(context,filePath){
         var fileManager = [NSFileManager defaultManager]
 	    if([fileManager fileExistsAtPath:filePath]) {
 	    	var log = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
@@ -21,11 +21,41 @@ var fileHelper = {
 	    return false
     },
 
-    "removeFileOrFolder": function(filePath){
+    removeFileOrFolder: function(filePath){
     	[[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     },
 
-    "writeStringToFile": function(context, text, filePath){
+	exportPageToPng: function(context, page){
+		if(!context){
+			NSLog("No context and text was provided for log")
+			return false
+		}
+
+		if(!page){
+			NSLog("No text was provided for log")
+			return false
+		}
+
+		var doc = context.document;
+		var frame = [page contentBounds];
+		var fileName = [page name];
+		var exportRequest = MSExportRequest.requestWithRect_scale(frame,1)
+
+		var tmpPath = NSTemporaryDirectory()
+		var fileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".png"
+		//just remove the file to make sure
+		this.removeFile(tmpPath  + fileName,context)
+		
+		if(this.createFolderAtPath(context, tmpPath)){
+			var filePath= tmpPath + fileName
+			doc.saveArtboardOrSlice_toFile(exportRequest, filePath)
+			return filePath;
+		}else{
+			NSLog("Unable to create forlder at " + tmpPath  + fileName)
+			return false;
+		}
+    },
+    writeStringToFile: function(context, text, filePath){
     	var aFileHandle
 		var aFile
 		var t
@@ -42,7 +72,7 @@ var fileHelper = {
 		}
     },
 
-    "generateFile": function(context,text,fileName){
+    generateFile: function(context,text,fileName){
 		if(!context){
 			if(text){
 				NSLog("No context was provided for log : " + text)
@@ -59,7 +89,7 @@ var fileHelper = {
 		}
 
 		var tmpPath = NSTemporaryDirectory()
-		var fileName = fileName + ".csv"
+		var fileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".csv"
 		//just remove the file to make sure
 		this.removeFile(tmpPath  + fileName,context)
 		
@@ -69,24 +99,24 @@ var fileHelper = {
 		}
     },
 
-    "getTmpDirectory": function(context){
+    getTmpDirectory: function(context){
 		return NSTemporaryDirectory()
 	},
 
-	"getCurrentTime": function(){
+	getCurrentTime: function(){
 		var DateFormatter=[[NSDateFormatter alloc] init]
 		[DateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"]  
 		return [DateFormatter stringFromDate:[NSDate date]]
 	},
-	"copyFile": function(srcPath, dstPath,context){
+	copyFile: function(srcPath, dstPath,context){
 		//just remove the file, in case it's there
 		this.removeFile(dstPath,context)
 		return [[NSFileManager defaultManager] copyItemAtPath:srcPath toPath:dstPath error:nil];
 	},
-	"removeFile": function(filePath,context) {
+	removeFile: function(filePath,context) {
 		return [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
 	},
-	"csvToJson": function(csv){
+	csvToJson: function(csv){
 		var str = csv;
 		var regexp = /([\s\S]*?):q:q:q:q:s:([\s\S]*?):q:q:q:q:e:/gm
 		//var regexp = /^([\s\S]*?):q:q:q:q:m:([\s\S]*?)$/gm;
@@ -95,11 +125,9 @@ var fileHelper = {
 			//key = key.replace(/^\n/, '');
 			jsonObj[key] = val;
 		});
-		log("JSON Is: ")
-		log(jsonObj);
 		return jsonObj;
 	},
-	"jsonToCsv": function(json) {
+	jsonToCsv: function(json) {
 		var seperator = ":q:q:q:q:s:"
 		var endOfLine = ":q:q:q:q:e:"
 		var str = "";

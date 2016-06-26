@@ -1,6 +1,5 @@
-@import "utils.js"
-var utils = {
-
+var utils = utils || {};
+utils = {
   "getPageId" : function(page){
     var string = page.toString()
     var openRange = [string rangeOfString:@"("]
@@ -134,7 +133,7 @@ var utils = {
   "deleteAllKeys": function(context){
     var defaultsDictionary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
     var keys = [defaultsDictionary allKeys]
-    for (i = 0; i < [keys length]; ++i) {
+    for (i = 0; i < [keys count]; ++i) {
         var key = keys[i]
         if([key hasPrefix:@"QUSER"]){
           [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
@@ -220,26 +219,8 @@ var utils = {
   },
 
   "saveOrganizations": function(organizations, context){
-    [[NSUserDefaults standardUserDefaults] setObject:organizations forKey:"QUSER_qordoba_user_organizations"]
-    [[NSUserDefaults standardUserDefaults] synchronize]
-  },
-
-   "saveActiveApiKeyFromComputer": function(organizationId, key, context) {
-      [[NSUserDefaults standardUserDefaults] setObject:key forKey:"QUSER_qordoba_org_api_key_" + organizationId];
-      [[NSUserDefaults standardUserDefaults] synchronize]
-  },
-
-  "getActiveApiKeyFromComputer": function(organizationId, context) {
-      var key = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_org_api_key_" + organizationId];
-      if (key) {
-        return key;
-      } else {
-        return false;
-      }
-  },
-
-    "deleteActiveApiKeyFromComputer": function(page, context) {
-      [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_fileid_forpage_" + organizationId];
+     [[NSUserDefaults standardUserDefaults] setObject:organizations forKey:"QUSER_qordoba_user_organizations"]
+     [[NSUserDefaults standardUserDefaults] synchronize]
     },
 
     "saveFileIdForPage": function(projectId,documentName, page, fileId, context) {
@@ -439,27 +420,7 @@ var utils = {
     }
     return false;
   },
-"detachFromSymbolAndStyle": function (context,symbolsContainer,layer) {
-        // Try to detach this layer from shared symbol and/or shared style and/or text style
-        if (layer.isSharedObject()) {
-            if (layer.respondsToSelector("sharedObjectID")) {
-                //TODO Check Symbol issue
-                //var symbol = symbolsContainer.symbolForInstance(layer)
-                //if (symbol) {
-                //    symbol.unregisterInstance(layer)
-                //}
-            }
-        }
-        // Recursively try to detach all childs
-
-        //if (layer.respondsToSelector("layers")) {
-        //    var layers = layer.layers()
-        //    for (var i = 0; i < layers.count(); i++) {
-        //        detachFromSymbolAndStyle(context,symbolsContainer,layers.objectAtIndex(i))
-        //   }
-        //}
-  },
-"excludeSymbols": function(context){
+ "excludeSymbols": function(context){
     var doc = context.document
     var symbols = doc.documentData().layerSymbols().objects().array();
       for(var j = 0; j < symbols.count(); j++){

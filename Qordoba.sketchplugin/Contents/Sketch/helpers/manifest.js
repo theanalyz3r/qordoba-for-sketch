@@ -1,5 +1,5 @@
 var manifest = {
-    "getManifestFilePath": function(context){
+    getManifestFilePath: function(context){
         var scriptFullPath = context.scriptPath
         var directoryPlugin = [scriptFullPath stringByDeletingLastPathComponent]
         var manifestFile = directoryPlugin + "/manifest.json"
@@ -7,7 +7,7 @@ var manifest = {
         return manifestFile
     },
 
-    "readManifestFile": function(context){
+    readManifestFile: function(context){
         var filePath = manifest.getManifestFilePath(context)
         var fileManager = [NSFileManager defaultManager]
         if([fileManager fileExistsAtPath:filePath]) {
@@ -30,7 +30,7 @@ var manifest = {
         return false
     },
 
-    "getPluginVersion": function(context){
+    getPluginVersion: function(context){
         var json = manifest.readManifestFile(context);
 
         if(json){

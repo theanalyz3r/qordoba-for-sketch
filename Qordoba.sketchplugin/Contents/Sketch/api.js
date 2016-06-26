@@ -1,6 +1,5 @@
 // Needs to be loaded first!
 @import 'framework-utils/qordoba-framework.js'
-
 @import 'helpers/error-logging.js'
 @import 'helpers/files.js'
 @import 'helpers/utils.js'
@@ -10,6 +9,7 @@
 @import 'helpers/utils.js'
 @import 'helpers/qordoba-api.js'
 @import 'helpers/texts.js'
+@import "helpers/editor.js"
 @import 'helpers/forms.js'
 
 var app = [NSApplication sharedApplication];
@@ -74,15 +74,17 @@ function fireLoginWindowWithContext(context){
 	[loginButton setBezelStyle:NSRoundedBezelStyle]
 	[loginButton setKeyEquivalent:"\r"]
 	[loginButton setCOSJSTargetFunction:function(sender) {
-	    [loginWindow orderOut:nil]
-	    [app stopModal]
 	    var email = emailInputField.stringValue()
 	    var password = passwordField.stringValue()
-	    loginWithUsernameAndPassword(email, password, context)
-	    [cancelButton setCOSJSTargetFunction:undefined]
-	    [loginButton setCOSJSTargetFunction:undefined]
-	    [createQordobaButton setCOSJSTargetFunction:undefined]
-	    [createHelpButton setCOSJSTargetFunction:undefined]
+	    var res = loginWithUsernameAndPassword(email, password, context)
+	    if(res){
+		    [loginWindow orderOut:nil]
+		    [app stopModal]
+		    [cancelButton setCOSJSTargetFunction:undefined]
+		    [loginButton setCOSJSTargetFunction:undefined]
+		    [createQordobaButton setCOSJSTargetFunction:undefined]
+		    [createHelpButton setCOSJSTargetFunction:undefined]
+	    }
 	}];
 	[loginButton setAction:"callAction:"]
 	[[loginWindow contentView] addSubview:loginButton]
@@ -123,7 +125,7 @@ function fireLoginWindowWithContext(context){
 	[createQordobaButton setTitle:"No account? Sign up"]
 	[createQordobaButton setBezelStyle:NSRoundedBezelStyle]
 	[createQordobaButton setCOSJSTargetFunction:function(sender) {
-	    var url = [NSURL URLWithString:@"https://app.qordoba.com/"];
+	    var url = [NSURL URLWithString:@"https://www.qordoba.com/sketch-professional"];
 	    if( ![[NSWorkspace sharedWorkspace] openURL:url] ){
 	        sketchLog(context,"Failed to open url:" + [url description])
 	    }    
@@ -235,240 +237,12 @@ function fireAlreadyLoggedInWindow(context){
 	[app runModalForWindow:alreadyLoggedInWindow]
 }
 
-
-/*
- *
- *
- *
-**/
-function fireSendArtboards(all, context){
-	var doc = context.document
-	var yDropdowns = 170;
-
-	var windowSendArtboards = [[NSWindow alloc] init]
-	[windowSendArtboards setFrame:NSMakeRect(0, 0, 485, 333) display:false]
-	[windowSendArtboards setBackgroundColor:NSColor.whiteColor()]
-	
-	var titleField = [[NSTextField alloc] initWithFrame:NSMakeRect(74, yDropdowns + 80, 540, 17)]
-	[titleField setEditable:false]
-	[titleField setBordered:false]
-	[titleField setDrawsBackground:false]
-	[titleField setFont:[NSFont boldSystemFontOfSize:13]];
-	[titleField setStringValue:"Please choose the organization: "]
-	[[windowSendArtboards contentView] addSubview:titleField]
-
-	//Organization
-	var organizationsArray = utils.getUserOrganizations(context)
-	var organizationPopup = [[NSComboBox alloc] initWithFrame:NSMakeRect(74, yDropdowns + 45, 260, 26)]
-	[organizationPopup removeAllItems]
-	[organizationPopup setFocusRingType:NSFocusRingTypeNone]
-	var lastUsedOrganizationId = utils.getLastUsedOrganization(context)
-	var lastUsedOrganizationIdIndex
-	var organizationNames = []
-
-	var noOrganizations = false
-	if([organizationsArray count] == 0){
-		noOrganizations = true
-	}
-
-	sketchLog(context, "Find pre used organizations");
-	for (i = 0; i < [organizationsArray count]; ++i) {
-			organizationNames.push(organizationsArray[i].name);
-			if(lastUsedOrganizationId == organizationsArray[i].id){
-				lastUsedOrganizationIdIndex = i;
-				sketchLog(context, "Last used organization index " + lastUsedOrganizationIdIndex + "and ID is " + organizationsArray[i].id)
-			}
-	}
-	[organizationPopup addItemsWithObjectValues:organizationNames]
-
-	sketchLog(context, "Set last used organization")
-
-	if(lastUsedOrganizationIdIndex){
-		[organizationPopup selectItemAtIndex:lastUsedOrganizationIdIndex]
-	} else {
-		if (noOrganizations == false){
-			sketchLog(context, "There are organizations")
-			[organizationPopup selectItemAtIndex:0]
-		}
-	}
-	[[windowSendArtboards contentView] addSubview:organizationPopup]
-
-	//load projects button
-	var loadProjects = [[NSButton alloc] initWithFrame:NSMakeRect(330, yDropdowns + 45, 110, 26)]
-	[loadProjects setTitle:"Load Projects"]
-	[loadProjects setBezelStyle:NSRoundedBezelStyle]
-	[loadProjects setCOSJSTargetFunction:function(sender) {
-		var selectedOrganization = [organizationPopup objectValueOfSelectedItem];
-		if (!selectedOrganization){
-			selectedOrganization = [projectPopup stringValue];
-		}
-		[doc showMessage: selectedOrganization]
-		var organizationId;
-	    for (i = 0; i < [organizationsArray count]; ++i) {
-	    if (selectedOrganization == organizationsArray[i].name){
-	    	organizationId = organizationsArray[i].id;	
-	    	} 			
-		}
-		//getApiKeyFromServer(organizationId,context)
-		[doc showMessage: "Loading projects of Org: " + selectedOrganization]
-		var projectsArray = getProjectsArray(organizationId,context)
-		var projectNames = []
-		[projectPopup removeAllItems]
-		for (i = 0; i < projectsArray.length; ++i) {
-			projectNames.push(projectsArray[i].name);
-		}		
-		[projectPopup addItemsWithObjectValues:projectNames]
-		[projectPopup selectItemAtIndex:0]
-	}];
-	[loadProjects setAction:"callAction:"]
-	[[windowSendArtboards contentView] addSubview:loadProjects]
-
-	//Project
-	var firstOrganization = [organizationsArray objectAtIndex:0]
-	var projectsArray = getProjectsArray(firstOrganization.id,context)
-	var titleProjectField = [[NSTextField alloc] initWithFrame:NSMakeRect(74, yDropdowns + 20, 540, 17)]
-	[titleProjectField setEditable:false]
-	[titleProjectField setBordered:false]
-	[titleProjectField setDrawsBackground:false]
-	[titleProjectField setFont:[NSFont boldSystemFontOfSize:13]];
-	[titleProjectField setStringValue:"Please choose the project: "]
-	[[windowSendArtboards contentView] addSubview:titleProjectField]
-
-
-	var projectPopup = [[NSComboBox alloc] initWithFrame:NSMakeRect(74, yDropdowns - 10, 260, 26)]
-	[projectPopup removeAllItems]
-	[projectPopup setFocusRingType:NSFocusRingTypeNone]
-	var lastUsedProjectId = utils.getLastUsedProject(context)
-	var lastUsedProjectIdIndex
-	var projectNames = []
-
-	var noProjects = false
-	if(projectsArray.length == 0){
-		noProjects = true
-	}
-
-	sketchLog(context, "Find pre used projects");
-	for (i = 0; i < projectsArray.length; ++i) {
-			projectNames.push(projectsArray[i].name);
-
-			if(lastUsedProjectId == projectsArray[i].id){
-				lastUsedProjectIdIndex = i;
-				sketchLog(context, "Last used project index " + lastUsedProjectIdIndex + "and ID is " + projectsArray[i].id)
-			}
-	}
-	[projectPopup addItemsWithObjectValues:projectNames]
-
-	sketchLog(context, "Set last used project")
-
-	if(lastUsedProjectIdIndex){
-		[projectPopup selectItemAtIndex:lastUsedProjectIdIndex]
-	} else {
-		if (noProjects == false){
-			sketchLog(context, "There are projects")
-			[projectPopup selectItemAtIndex:0]
-		}
-	}
-	[[windowSendArtboards contentView] addSubview:projectPopup]
-	
-	
-	//Buttons
-	var bottomActionsView = [[NSView alloc] initWithFrame:NSMakeRect(74, 112, 348, 1)]
-	bottomActionsView.setWantsLayer(true)
-	[[windowSendArtboards contentView] addSubview:bottomActionsView]	
-		
-	var borderLayer = [CALayer layer]
-	borderLayer.frame = CGRectMake(0, 1, 348, 1)
-	[borderLayer setBackgroundColor:CGColorCreateGenericRGB(220/255, 220/255, 220/255, 1.0)]
-	[bottomActionsView setLayer:borderLayer];
-
-	var yPosButtons = 45;
-	
-	// Buttons
-	var sendButton = [[NSButton alloc] initWithFrame:NSMakeRect(295, yPosButtons, 134, 46)]
-	var cancelButton = [[NSButton alloc] initWithFrame:NSMakeRect(225, yPosButtons, 76, 46)]
-
-	[sendButton setTitle:"Sync to Qordoba"]
-	[sendButton setBezelStyle:NSRoundedBezelStyle]
-	[sendButton setCOSJSTargetFunction:function(sender) {
-				sketchLog(context,"Send Artboards");
-				
-				var selectedProject = [projectPopup objectValueOfSelectedItem];
-				if (!selectedProject){
-				    selectedProject = [projectPopup stringValue];
-				}
-
-				var projectId;
-
-	    		for (i = 0; i < projectsArray.length; ++i) {
-	    			if (selectedProject == projectsArray[i].name){
-	    				projectId = projectsArray[i].id;	
-	    			} 
-	    		}
-	    		
-	    		orgIndex = [organizationPopup indexOfSelectedItem]
-	    		var selectedOrganization = organizationsArray[orgIndex]	
-
-	    		log(selectedOrganization)
-	    		//selectedOrganization = {id: 1}
-	    		//TODO the export
-	    		if (projectId){
-		    		if(all == 1){
-						exportAllArtboardsAndSendTo(context,1,projectId)
-					} else {
-						exportArtboardsAndSendTo(context,1,projectId, context.selection)
-					}
-					utils.saveLastUsedProject(projectId,context)
-					
-					[windowSendArtboards orderOut:nil]
-					[app stopModal]
-					[cancelButton setCOSJSTargetFunction:undefined]
-	    			[sendButton setCOSJSTargetFunction:undefined]
-				}
-	}];
-	[sendButton setAction:"callAction:"]
-	[[windowSendArtboards contentView] addSubview:sendButton]
-
-	[cancelButton setTitle:"Cancel"]
-	[cancelButton setBezelStyle:NSRoundedBezelStyle]
-	[cancelButton setCOSJSTargetFunction:function(sender) {
-	    [windowSendArtboards orderOut:nil]
-	    [app stopModal]
-	    [cancelButton setCOSJSTargetFunction:undefined]
-	    [sendButton setCOSJSTargetFunction:undefined]
-	}];
-	[cancelButton setAction:"callAction:"]
-	[[windowSendArtboards contentView] addSubview:cancelButton]
-	[windowSendArtboards setDefaultButtonCell:[sendButton cell]];
-	[app runModalForWindow:windowSendArtboards]
-}
-
-/**
- *
- * Fire Translate Artboards
- *
-**/	
-function fireTranslateArtboards(all, context){
-	var doc = context.document
-	var project = utils.getProject()
-	var language = utils.getTargetLanguage()
-	var organization = utils.getOrganization()
-	if(!project || !language || !organization){
-		fireConfiguration(context)
-		return;
-	}
-
-	if(all == 1){
-		translateAllArtboardsAndSendTo(context,organization,project,language)	
-	}
-}
-
 /**
  *
  * Fire Support
  *
 **/	
 function fireSupport(context){
-	
 	var systemVersionDictionary = [NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"]
 	var systemVersion = [systemVersionDictionary objectForKey:@"ProductVersion"]
 	var pluginVersion = manifest.getPluginVersion(context)
@@ -611,7 +385,6 @@ function fireSupport(context){
 // Helpers
 
 function dealWithErrors(context,data){
-
 		sketchLog(context,"Received an error from the server")
 		var stringRead = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];	
 		
@@ -630,71 +403,6 @@ function dealWithErrors(context,data){
 		sketchLog(context,"Return data " + stringRead)		
 }
 
-function exportArtboardsAndSendTo(context, organizationId, projectId, selection) {
-				var loop = [selection objectEnumerator];
-				var existing_artboards_names = [];					
-				while (artboard = [loop nextObject]) {
-				  	if (artboard.className() == "MSArtboardGroup") {
-				  	var arrayCount = existing_artboards_names.length;
-				  	for (var i = 0; i < arrayCount; i++) {
-				  		if(existing_artboards_names[i] == [artboard name]){
-				  				fireError("You have more than one artboard with the name '" + [artboard name]  + "', please change one of these artboard names.","Please rename one of these artboards in order to solve this issue.")
-				  				return false
-				  			} 
-				  	}
-				  	existing_artboards_names.push([artboard name]); 
-				  	}					  	 					  	 
-				}
-				
-				if(existing_artboards_names.length == 0){
-				  fireError("You didn't select any artboards.","Select at least one artboard before sending.")
-				  return false
-				}
-}
-
-function exportAllArtboardsAndSendTo(context, organizationId, projectId) {
-	var document = context.document
-	var doc = context.document
-	var currentPage = [doc currentPage] 
-					
-	//var path = NSTemporaryDirectory() + filename
-	var string = translate.generateLocaleForCurrentPage(context)
-	var pageName = [currentPage name]
-	var filePath = fileHelper.generateFile(context,string,pageName)
-
-					postFile(context,filePath,organizationId,projectId,pageName,0)
-
-					sketchLog(context,"saved to this file: ")
-					sketchLog(context,filePath)
-					var artboards = [[document currentPage] artboards];
-					var loop = [artboards objectEnumerator];
-					var existing_artboards_names = [];
-											
-					while (artboard = [loop nextObject]) {
-					  	var arrayCount = existing_artboards_names.length;
-					  	for (var i = 0; i < arrayCount; i++) {
-					  			if(existing_artboards_names[i] == [artboard name]){
-					  				
-					  				fireError("You have more than one artboard with the name '" + [artboard name]  + "', please change one of these artboard names.","Please rename one of these artboards in order to solve this issue.")
-					  				return false
-					  				  
-					  			} 
-					  	}
-					  	existing_artboards_names.push([artboard name]); 					  	 					  	 
-					}
-}
-
-function translateAllArtboardsAndSendTo(context,organization, project,language) {
-	var doc = context.document
-	var currentPage = [doc currentPage] 
-	var pageName = [currentPage name]
-	var documentName = [doc displayName]
-	var fileId = utils.getFileIdForPage(documentName,currentPage,context)
-	log("file Id: " + fileId)
-	var translations = downloadFileNSUrlConnection(context,organization.id,project.id,language.id,fileId)
-	translate.translatePageWithData(context,currentPage, language.name, translations)
-}
-
 function fireError(title,text){
 		[app displayDialog:text withTitle:title]
 }
@@ -702,8 +410,7 @@ function fireError(title,text){
 
 
 var updatesChecker = {
-	"getNewestVersionNumber": function(context){
-       
+	getNewestVersionNumber: function(context){
        	sketchLog(context,"updatesChecker.getNewestVersionNumber()")
        	       	
        	var url = [NSURL URLWithString:"https://raw.githubusercontent.com/Qordobacode/qordoba-for-sketch/master/Qordoba.sketchplugin/Contents/Sketch/manifest.json"];
@@ -736,7 +443,6 @@ var updatesChecker = {
        	sketchLog(context,"updatesChecker.getNewestVersionNumber() failed")
         [app displayDialog:"Try again later..." withTitle:"Could not contact GitHub properly."]
        	return false
-
     }
 }
 
