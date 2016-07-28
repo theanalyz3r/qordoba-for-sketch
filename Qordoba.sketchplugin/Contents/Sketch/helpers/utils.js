@@ -32,7 +32,7 @@ utils = {
 
   "getNames" : function(objs){
       var arr = []
-      for (i = 0; i < objs.count(); ++i) {
+      for (i = 0; i < objs.length; ++i) {
           arr.push(objs[i].name);
       }
       return arr;
@@ -57,7 +57,7 @@ utils = {
   },
   "getIndexOf": function(objs, name){
     var index = 0;
-    for (i = 0; i < objs.count(); ++i) {
+    for (i = 0; i < objs.length; ++i) {
       if(name == objs[i]){
         index = i;
         return index;
@@ -422,10 +422,10 @@ utils = {
   },
  "excludeSymbols": function(context){
     var doc = context.document
-    var symbols = doc.documentData().layerSymbols().objects().array();
+    var symbols = doc.documentData().layerSymbols().objects();
       for(var j = 0; j < symbols.count(); j++){
         var symbol = symbols[j];
-        var layers = symbol.value().layers().array()
+        var layers = symbol.value().layers()
         for(var i = 0; i < layers.count(); i++){
           var layer = layers[i];
           if(layer.class() == MSTextLayer){
@@ -437,7 +437,6 @@ utils = {
       }
   },
 "exlcudeGroups": function(context,layers){
-    layers = layers.array();
     for(var i = 0; i< layers.count(); i++){
       var layer = layers[i];
       if(layer.class() == MSTextLayer){

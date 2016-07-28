@@ -146,7 +146,7 @@ var translate = {
         
         //Duplicate the page
         var newPage = page.copy();
-        newPage.pageDelegate = page.pageDelegate();
+        //newPage.pageDelegate = page.pageDelegate();
         newPage.setName(pageName + ': ' + language.name);
         doc.documentData().addPage(newPage);
         doc.setCurrentPage(newPage);
