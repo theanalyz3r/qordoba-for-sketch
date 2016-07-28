@@ -64,9 +64,9 @@ qutils.call = {
     callback(layer);
     if (qutils.is.group(layer)) {
       if(layer.isKindOfClass(MSSymbolInstance)){
-          var childLayers = layer.symbolMaster().layers().array();
+          var childLayers = layer.symbolMaster().layers();
       }else{
-          var childLayers = [layer layers].array();  
+          var childLayers = [layer layers];  
       }
       if (childLayers) {
         for (var i = 0; i < childLayers.count(); i++) {

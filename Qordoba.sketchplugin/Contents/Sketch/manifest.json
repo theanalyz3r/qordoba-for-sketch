@@ -3,10 +3,8 @@
   "description": "Integration with Qordoba Translation Platform",
   "author": "Qordoba",
   "homepage": "https://qordoba.com",
-  "version": 2.2,
+  "version": 2.3,
   "identifier": "com.qordoba.sketch.plugin",
-  "compatibleVersion": 3,
-  "bundleVersion": 1,
   "commands": [
     {
       "name": "Login / Logout",
@@ -42,7 +40,7 @@
       "name": "Check for updates",
       "identifier": "updates",
       "script": "updates.js",
-      "shortcut": "",
+      "shortcut": ""
     },
     {
       "name": "Set Selected Layer MaxWidth",

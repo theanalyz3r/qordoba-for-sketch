@@ -280,13 +280,7 @@ editor.utom.extend({
     initConfigs: function(){
         this.configs = this.getConfigs();
         
-        this.configsPage = this.find("Sketch Measure", this.pages, true);
-
-        if(this.configsPage){
-            this.configsColors = this.find("Color Palette", this.configsPage);
-        }
-
-        if(!this.configs){
+        if(false && !this.configs){
             var defaultConfigs = {};
             var resolution = this.resolutionSetting();
 
@@ -305,99 +299,6 @@ editor.utom.extend({
     }
 });
 
-// Settings
-editor.utom.extend({
-    allResolution: [
-        {
-            name: "Standard @1x (px)",
-            scale: 1
-        },
-        {
-            name: "Points @1x (pt)",
-            scale: 1
-        },
-        {
-            name: "Retina @2x (pt)",
-            scale: 2
-        },
-        {
-            name: "Retina HD @3x (pt)",
-            scale: 3
-        },
-        {
-            name: "LDPI @0.75x (dp, sp)",
-            scale: .75
-        },
-        {
-            name: "MDPI @1x (dp, sp)",
-            scale: 1
-        },
-        {
-            name: "HDPI @1.5x (dp, sp)",
-            scale: 1.5
-        },
-        {
-            name: "XHDPI @2x (dp, sp)",
-            scale: 2
-        },
-        {
-            name: "XXHDPI @3x (dp, sp)",
-            scale: 3
-        },
-        {
-            name: "XXXHDPI @4x (dp, sp)",
-            scale: 4
-        },
-        {
-            name: "Ubuntu Grid (27px)",
-            scale: 27
-        },
-        {
-            name: "CSS Rem (14px)",
-            scale: 14
-        },
-    ],
-    resolutionSetting: function(){
-        var self = this;
-        var cellWidth = 300;
-        var rowHeight = 26;
-        var allResolution = this.allResolution;
-        var cellHeight = rowHeight * allResolution.length;
-
-        var accessory = NSView.alloc().initWithFrame(NSMakeRect(0, 0, cellWidth, cellHeight + 30));
-        var matrix = [[NSMatrix alloc] initWithFrame:NSMakeRect(0, 30, cellWidth, cellHeight)
-            mode:NSRadioModeMatrix
-            cellClass:[NSButtonCell class]
-            numberOfRows: allResolution.length
-            numberOfColumns:1
-        ];
-        matrix.setCellSize(NSMakeSize(cellWidth, 25))
-
-        allResolution.forEach(function(data, i) {
-            var cell = matrix.cells()[i]
-            cell.setButtonType(NSRadioButton);
-            cell.setTitle(data.name);
-            cell.setTag(i);
-        });
-
-        [accessory addSubview:matrix]
-
-        var alert = NSAlert.alloc().init();
-        alert.setMessageText(_("Resolution setup"));
-        alert.setInformativeText(_("* Choose your design resolution"));
-        alert.addButtonWithTitle(_("OK"));
-        alert.addButtonWithTitle(_("Cancel"));
-        alert.setAccessoryView(accessory);
-
-        var buttonReturnValue = [alert runModal],
-            selectedIndex = [[matrix selectedCell] tag];
-
-        if (buttonReturnValue === NSAlertFirstButtonReturn) {
-            return selectedIndex;
-        }
-        return false;
-    }
-});
 
 editor.utom.extend({
     isHidden: false,
@@ -599,7 +500,7 @@ editor.utom.extend({
 
         var colorJSON = {};
         var colorDetailJSON = {};
-        var colorGroups = this.configsColors.layers().array().objectEnumerator();
+        var colorGroups = this.configsColors.layers().objectEnumerator();
 
         while (colorGroup = colorGroups.nextObject()) {
             if( this.is( colorGroup, MSLayerGroup ) ){
@@ -1016,7 +917,7 @@ editor.utom.extend({
     },
     gradientToJSON: function(gradient) {
         var stops = [],
-            msStop, stopIter = gradient.stops().array().objectEnumerator();
+            msStop, stopIter = gradient.stops().objectEnumerator();
         while (msStop = stopIter.nextObject()) {
             stops.push(this.colorStopToJSON(msStop));
         }
@@ -1062,7 +963,7 @@ editor.utom.extend({
     },
     getBorders: function(style) {
         var borders = [],
-            msBorder, borderIter = style.borders().array().objectEnumerator();
+            msBorder, borderIter = style.borders().objectEnumerator();
         while (msBorder = borderIter.nextObject()) {
             if (msBorder.isEnabled()) {
                 var fillType = this.FillTypes[msBorder.fillType()],
@@ -1093,7 +994,7 @@ editor.utom.extend({
     },
     getFills: function(style) {
         var fills = [],
-            msFill, fillIter = style.fills().array().objectEnumerator();
+            msFill, fillIter = style.fills().objectEnumerator();
         while (msFill = fillIter.nextObject()) {
             if (msFill.isEnabled()) {
                 var fillType = this.FillTypes[msFill.fillType()],
@@ -1122,14 +1023,14 @@ editor.utom.extend({
     },
     getShadows: function(style) {
         var shadows = [],
-            msShadow, shadowIter = style.shadows().array().objectEnumerator();
+            msShadow, shadowIter = style.shadows().objectEnumerator();
         while (msShadow = shadowIter.nextObject()) {
             if (msShadow.isEnabled()) {
                 shadows.push(this.shadowToJSON(msShadow));
             }
         }
 
-        shadowIter = style.innerShadows().array().objectEnumerator();
+        shadowIter = style.innerShadows().objectEnumerator();
         while (msShadow = shadowIter.nextObject()) {
             if (msShadow.isEnabled()) {
                 shadows.push(this.shadowToJSON(msShadow));
@@ -1152,7 +1053,7 @@ editor.utom.extend({
     exportSizes: function(layer, savePath){
         var self = this,
             exportSizes = [],
-            size, sizesInter = layer.exportOptions().exportFormats().array().objectEnumerator();
+            size, sizesInter = layer.exportOptions().exportFormats().objectEnumerator();
 
         while (size = sizesInter.nextObject()) {
             if (!self.slicesPath){
