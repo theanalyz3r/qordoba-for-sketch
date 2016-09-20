@@ -41,7 +41,7 @@ Select the Default Language Settings option in the plugin menu to automatically 
 
 ### Qordoba account 
 
-Don’t have a Qordoba account yet, but want to try out the plugin? Email hello@qordoba.com for a free trial.
+Don’t have a Qordoba account yet, but want to try out the plugin? Email hello@qordoba.com.
 
 
 ### Feature requests and feedback
