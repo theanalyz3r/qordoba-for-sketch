@@ -41,5 +41,4 @@ var manifest = {
         NSLog("Could not get version number");
         return false
     }
-
 }

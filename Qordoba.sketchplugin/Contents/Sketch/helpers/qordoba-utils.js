@@ -396,7 +396,7 @@ function setButtonPadding(buttonRect, textLayer, layers, padding) {
   var deltaWidth = newWidth - [buttonRect width];
 
   // loop through the layers and resize or reposition all (except textLayer)
-  for (var i = 0; i < [layers length]; i++) {
+  for (var i = 0; i < layers.count(); i++) {
     var layer = [layers objectAtIndex:i];
     if (layer != textLayer) {
       var layerFrame = [layer frame];
@@ -405,12 +405,12 @@ function setButtonPadding(buttonRect, textLayer, layers, padding) {
       if ([layerFrame x] < textFrameRight && [layerFrame x] + [layerFrame width] > textFrameRight) {
         // if the layer spans the x coordinate of the *right edge* of the text layer, assume it's
         // a background layer and resize its width accordingly
-        [layerFrame addWidth: deltaWidth];
-        [layerFrame subtractX: deltaWidth];
+        layerFrame.setWidth(layerFrame.width() + deltaWidth);
+        layerFrame.setX(layerFrame.x() - deltaWidth);
       }
       else if ([layerFrame x] + [layerFrame width]  < textFrameRight) {
         // if the layer is entirely to the left of the text layer's right edge, just reposition it
-        [layerFrame subtractX:deltaWidth];
+        layerFrame.setX(layerFrame.x() - deltaWidth);
       }
     }
   }

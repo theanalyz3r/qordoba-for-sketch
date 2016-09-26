@@ -66,14 +66,14 @@ utils = {
     return index;
   },
   "saveActiveTokenToComputer": function(context,token,userid,username,useremail) {
-    [[NSUserDefaults standardUserDefaults] setObject:token forKey:"QUSER_qordoba_token"]
-    [[NSUserDefaults standardUserDefaults] setObject:userid forKey:"QUSER_qordoba_user_id"]
-    [[NSUserDefaults standardUserDefaults] setObject:username forKey:"QUSER_qordoba_user_name"]
-    [[NSUserDefaults standardUserDefaults] setObject:useremail forKey:"QUSER_qordoba_user_email"]
+    [[NSUserDefaults standardUserDefaults] setObject:token forKey:"QUSER_qordoba_token" + "_" + qordobaSDK.common.version]
+    [[NSUserDefaults standardUserDefaults] setObject:userid forKey:"QUSER_qordoba_user_id" + "_" + qordobaSDK.common.version]
+    [[NSUserDefaults standardUserDefaults] setObject:username forKey:"QUSER_qordoba_user_name" + "_" + qordobaSDK.common.version]
+    [[NSUserDefaults standardUserDefaults] setObject:useremail forKey:"QUSER_qordoba_user_email" + "_" + qordobaSDK.common.version]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
   "getActiveTokenFromComputer": function(context) {
-    var token = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_token"];
+    var token = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_token" + "_" + qordobaSDK.common.version];
     if (token) {
       return token;
     } else {
@@ -82,7 +82,7 @@ utils = {
   },
 
   "getUserName": function(context) {
-    var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_name"];
+    var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_name" + "_" + qordobaSDK.common.version];
     if (value) {
       return value;
     } else {
@@ -91,7 +91,7 @@ utils = {
   },
 
   "getUserEmail": function(context) {
-    var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_email"];
+    var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_email" + "_" + qordobaSDK.common.version];
     if (value) {
       return value;
     } else {
@@ -99,7 +99,7 @@ utils = {
     }
   },
   "getUserId": function(context) {
-    var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_id"];
+    var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_id" + "_" + qordobaSDK.common.version];
     if (value) {
       return value;
     } else {
@@ -108,19 +108,19 @@ utils = {
   },
   
   "deleteActiveTokenFromComputer": function(context) {
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_token"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_user_id"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_user_name"];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_user_email"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_token" + "_" + qordobaSDK.common.version];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_user_id" + "_" + qordobaSDK.common.version];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_user_name" + "_" + qordobaSDK.common.version];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_user_email" + "_" + qordobaSDK.common.version];
     this.deleteAllKeys(context)
   },
   "saveUserOrganizations": function(context,organizations) {
-      [[NSUserDefaults standardUserDefaults] setObject:organizations forKey:"QUSER_qordoba_user_organizations"]
+      [[NSUserDefaults standardUserDefaults] setObject:organizations forKey:"QUSER_qordoba_user_organizations" + "_" + qordobaSDK.common.version]
       [[NSUserDefaults standardUserDefaults] synchronize]
   }, 
 
   "getUserOrganizations": function(context) {
-    var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_organizations"];
+    var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_organizations" + "_" + qordobaSDK.common.version];
     if (value) {
       return value;
     } else {
@@ -142,7 +142,7 @@ utils = {
     [[NSUserDefaults standardUserDefaults] synchronize];
   },
   "getOrganization": function(context){
-    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba connected organization"];
+    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba connected organization" + "_" + qordobaSDK.common.version];
     if (object) {
       return object;
     } else {
@@ -151,12 +151,12 @@ utils = {
   },
 
   "saveOrganization": function(organization, context){
-    [[NSUserDefaults standardUserDefaults] setObject:organization forKey:"QUSER_qordoba connected organization"]
+    [[NSUserDefaults standardUserDefaults] setObject:organization forKey:"QUSER_qordoba connected organization" + "_" + qordobaSDK.common.version]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
 
   "getProject": function(context){
-    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba connected project"];
+    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba connected project" + "_" + qordobaSDK.common.version];
     if (object) {
       return object;
     } else {
@@ -165,12 +165,12 @@ utils = {
   },
 
   "saveProject": function(project, context){
-    [[NSUserDefaults standardUserDefaults] setObject:project forKey:"QUSER_qordoba connected project"]
+    [[NSUserDefaults standardUserDefaults] setObject:project forKey:"QUSER_qordoba connected project" + "_" + qordobaSDK.common.version]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
 
   "getTargetLanguage": function(context){
-    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba connected project target language"];
+    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba connected project target language" + "_" + qordobaSDK.common.version];
     if (object) {
       return object;
     } else {
@@ -179,12 +179,12 @@ utils = {
   },
 
   "saveTargetLanguage": function(language, context){
-    [[NSUserDefaults standardUserDefaults] setObject:language forKey:"QUSER_qordoba connected project target language"]
+    [[NSUserDefaults standardUserDefaults] setObject:language forKey:"QUSER_qordoba connected project target language" + "_" + qordobaSDK.common.version]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
 
   "getOrganizationProjects": function(organizationId, context){
-    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba organization id:"+ organizationId+": projects"];
+    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba organization id:"+ organizationId+": projects" + "_" + qordobaSDK.common.version];
     if (object) {
       return object;
     } else {
@@ -193,15 +193,15 @@ utils = {
   },
 
   "saveOrganizationProjects": function(organizationId, projects, context){
-    [[NSUserDefaults standardUserDefaults] setObject:projects forKey:"QUSER_qordoba organization id:"+ organizationId+": projects"]]
+    [[NSUserDefaults standardUserDefaults] setObject:projects forKey:"QUSER_qordoba organization id:"+ organizationId+": projects" + "_" + qordobaSDK.common.version]]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
   "saveLanguages": function(context,languages){
-    [[NSUserDefaults standardUserDefaults] setObject:languages forKey:"QUSER_qordoba_languages"]]
+    [[NSUserDefaults standardUserDefaults] setObject:languages forKey:"QUSER_qordoba_languages" + "_" + qordobaSDK.common.version]]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
   "getLanguages": function(context){
-    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_languages"];
+    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_languages" + "_" + qordobaSDK.common.version];
     if (object) {
       return object;
     } else {
@@ -210,7 +210,7 @@ utils = {
   },
 
   "getOrganizations": function(context){
-    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_organizations"];
+    var object = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_organizations" + "_" + qordobaSDK.common.version];
     if (object) {
       return object;
     } else {
@@ -219,7 +219,7 @@ utils = {
   },
 
   "saveOrganizations": function(organizations, context){
-     [[NSUserDefaults standardUserDefaults] setObject:organizations forKey:"QUSER_qordoba_user_organizations"]
+     [[NSUserDefaults standardUserDefaults] setObject:organizations forKey:"QUSER_qordoba_user_organizations" + "_" + qordobaSDK.common.version]
      [[NSUserDefaults standardUserDefaults] synchronize]
     },
 
@@ -275,7 +275,7 @@ utils = {
   },
 
   "getLastUsedProject": function(context){
-    var last = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba last used project"];
+    var last = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba last used project" + "_" + qordobaSDK.common.version];
     if (last) {
       return last;
     } else {
@@ -284,7 +284,7 @@ utils = {
   },
 
   "saveLastUsedProject": function(projectId,context){
-    [[NSUserDefaults standardUserDefaults] setObject:projectId forKey:"QUSER_qordoba last used project"]
+    [[NSUserDefaults standardUserDefaults] setObject:projectId forKey:"QUSER_qordoba last used project" + "_" + qordobaSDK.common.version]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
 
@@ -314,7 +314,7 @@ utils = {
   },
 
   "getLastUsedOrganization": function(context){
-    var last = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba last used organization"];
+    var last = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba last used organization" + "_" + qordobaSDK.common.version];
     if (last) {
       return last;
     } else {
@@ -323,7 +323,7 @@ utils = {
   },
 
   "saveLastUsedOrganization": function(projectId,context){
-    [[NSUserDefaults standardUserDefaults] setObject:projectId forKey:"QUSER_qordoba last used organization"]
+    [[NSUserDefaults standardUserDefaults] setObject:projectId forKey:"QUSER_qordoba last used organization" + "_" + qordobaSDK.common.version]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
 
