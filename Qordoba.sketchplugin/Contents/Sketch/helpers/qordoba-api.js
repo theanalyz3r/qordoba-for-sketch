@@ -298,7 +298,6 @@ function downloadFileNSUrlConnection(context, organizationId, projectId, languag
 	[request setHTTPMethod:"GET"]
 	[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
 	[request setValue:token forHTTPHeaderField:"X-AUTH-TOKEN"]
-	[request setValue:token forHTTPHeaderField:"user_key"]
 
 	var tempPostData = [NSMutableData data]; 
 	var response = nil;
@@ -315,6 +314,44 @@ function downloadFileNSUrlConnection(context, organizationId, projectId, languag
 	return false;
 }
 
+/**
+ *
+ * download translated file from the server, json files only
+ *
+**/
+function downloadFileByName(context, organizationId, projectId, languageId, file_name) {
+	var token = utils.getActiveTokenFromComputer(context)
+	var url = [NSURL URLWithString:rootAppUrl + "projects/" + projectId + "/languages/"+ languageId +"/download_file" ];
+	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
+	[request setHTTPMethod:"POST"]
+	[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
+	[request setValue:token forHTTPHeaderField:"X-AUTH-TOKEN"]
+
+	var tmp = [[NSDictionary alloc] initWithObjectsAndKeys:
+	                     file_name, @"file_name",
+	                     nil];
+		var postData = [NSJSONSerialization dataWithJSONObject:tmp options:NSUTF8StringEncoding error:error];
+	[request setHTTPBody:postData];
+	
+	var tempPostData = [NSMutableData data]; 
+	var response = nil;
+	var error = nil;
+	var data = [NSURLConnection sendSynchronousRequest:request returningResponse:response error:error];
+	if (error == nil && data != nil)
+	{
+		var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil]
+		if(res!=nil && res.errMessage != nil){
+			fireError("Error!", res.errMessage)
+			return false;
+		}
+		theResponseText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+		jsonObject = fileHelper.csvToJson(theResponseText)
+		return jsonObject;
+	} else {
+		dealWithErrors(context,data)
+	}
+	return false;
+}
 
 function downloadFileNSUrlConnectionAsync(context, organizationId, projectId, languageId, fileId, downloadCallback) {
 	var token = utils.getActiveTokenFromComputer(context)
@@ -347,7 +384,6 @@ function downloadFileNSUrlConnectionAsync(context, organizationId, projectId, la
  *
 **/
 function getUserStatus(context) {
-		sketchLog(context,"getUserStatus()")
 		var doc = context.document
 		var token = utils.getActiveTokenFromComputer(context)
 		var url = [NSURL URLWithString:rootAppUrl + "user/status"];
@@ -375,3 +411,38 @@ function getUserStatus(context) {
 		}
 		return "free";	
 }
+
+
+
+/**
+ *
+ * Get User Status 
+ *
+**/
+function validateSession(context) {
+		var token = utils.getActiveTokenFromComputer(context)
+		var url = [NSURL URLWithString:rootAppUrl + "session"];
+        var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
+		[request setHTTPMethod:"GET"]
+		[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
+		[request setValue:token forHTTPHeaderField:"X-AUTH-TOKEN"]
+
+		var error = nil;                     
+		var response = nil;
+		var data = [NSURLConnection sendSynchronousRequest:request returningResponse:response error:error];
+        if (error == nil && data != nil){	
+				var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil]
+				return true;
+				if(res == nil || res.errMessage != nil){
+					return false;
+				}else if(res.token){
+				  	return true;
+				} else {
+					return false;
+				}
+		}
+		return false;	
+}
+
+
+

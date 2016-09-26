@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Default Language Settings</title>
+
+        <!-- <link href="assets/css/normalize.css" rel="stylesheet"> -->
+        <link href="assets/css/language_settings_app.css" rel="stylesheet">
+        <script type="text/javascript" src="assets/js/jquery-2.2.4.min.js"></script>
+        <script type="text/javascript" src="assets/js/common.js"></script>
+        <script type="text/javascript">
+        var settings = {};
+        
+        //data will be injected later
+        /*
+        var data = {
+            languages: [{
+                id: 0,
+                name: 'English - United States'
+            }, {
+                id: 1,
+                name: 'Spanish - United States'
+            }],
+            fonts: [{
+                id: 0,
+                name: 'Times New Roman'
+            }, {
+                id: 1,
+                name: 'Arial'
+            }],
+            settings: [
+                {
+                    language: 0,
+                    font: 1,
+                    ratio: 120
+                },
+                {
+                    language: 1,
+                    font: 0,
+                    ratio: 50
+                }
+            ]
+        };
+        */
+        
+        var submit = function(){
+            var dataToBeSaved = [];
+            $('.settings-item').each(function() {
+                var item = {};
+                item.language = $(this).find('.language').val();
+                item.font = $(this).find('.font-family').val();
+                item.ratio = Math.abs(parseInt($(this).find('.font-ratio').val()) || 0)
+                dataToBeSaved.push(item);
+            });
+            console.log(dataToBeSaved);
+            WebAction(dataToBeSaved);
+            //WebAction(settings);
+            console.log(window.location.hash);
+        }
+
+        var init = function(data) {
+            
+            $('body').html([
+                '<div class="container">',
+                    '<div class="header">',
+                        '<div class="header-image">',
+                            '<img src="assets/logo.png" alt="Qordoba Logo" width="65" height="65">',
+                        '</div>',
+                        '<div class="header-text">',
+                            '<h2>' + _('Default Language Settings') + '</h2>',
+                            '<p>' + _('The default language settings below allow you to set font and font ratio defaults to specific languages. Qordoba will automatically apply the preferences below to localized files.') + '</p>',
+                        '</div>',
+                    '</div>',
+                    '<div class="settings">',
+                        '<div class="settings-header">',
+                            '<h4 class="language">' + _('Language') + '</h4>',
+                            '<h4 class="font">' + _('Font Family') + '</h4>',
+                            '<h4 class="ratio">' + _('Font Ratio %') + '</h4>',
+                        '</div>',
+                        '<div class="settings-content"></div>',
+                        '<div class="settings-footer">',
+                            '<button id="add-new-button">' + _('+ Add another language')+ '</button>',
+                            '<button id="close-button">' + _('Save settings') + '</button>',
+                        '</div>',
+                    '</div>',
+                '</div>',
+            ].join(''));
+
+            buildContent(data);
+
+            // add new button click
+            $('#add-new-button').click(function() {
+                var newItem = {
+                        language: data.languages[0].id,
+                        font: data.fonts[0].id,
+                        ratio: 0
+                    };
+                
+                data.settings.push(newItem);
+                buildContent(data);
+            });
+            // add new button click
+            $('#close-button').click(submit);
+
+        };
+
+        function buildContent(data) {
+            var content = $('.settings-content');
+            // clean event handlers
+            content.find('.action-button').off('click');
+            // clear content
+            content.html('');
+            //init the global settings
+            settings = data.settings;
+            settings.forEach(function(item) {
+                var settingsItem = buildSettingsItem(item, data);
+                // append item to DOM
+                content.append(settingsItem);
+            });
+        }
+
+        function forceDataUpdate(data) {
+            settings = data.settings;
+        }
+
+        function buildSettingsItem(item, data) {
+            var container = $('<div>').addClass('settings-item'),
+                languages = data.languages,
+                fonts = data.fonts,
+                settings = data.settings;
+
+                languageSelect = $('<select>')
+                                    .addClass('language')
+                                    .appendTo(container),
+                fontsFamilySelect = $('<select>')
+                                        .addClass('font-family')
+                                        .appendTo(container),
+                fontRatio = $('<input>')
+                                .attr('type', 'number')
+                                .attr('min', 0)
+                                .attr('step', 1)
+                                .addClass('font-ratio')
+                                .appendTo(container),
+                actionButton = $('<button>')
+                                    .addClass('action-button')
+                                    .text('REMOVE')
+                                    .appendTo(container);
+
+            // populate languages DD with options
+            $(languages).each(function() {
+                languageSelect.append($("<option>").attr('value', this.id).text(this.name));
+            });
+
+            // populate fonts DD with options
+            $(fonts).each(function() {
+                fontsFamilySelect.append($("<option>").attr('value', this.id).text(this.name));
+            });
+
+            // select item language value
+            languageSelect.val(item.language || languages[0].id);
+            // select item font family value
+            fontsFamilySelect.val(item.font || fonts[0].id);
+            // select item font ratio value
+            fontRatio.val(item.ratio || 0);
+            
+            // mark item as unsaved on change of any field
+            languageSelect.change(onFieldChange);
+            fontsFamilySelect.change(onFieldChange);
+            fontRatio.change(onFieldChange);
+
+            // handle click button action
+            actionButton.click(function() {
+                var index = container.index();
+                container.remove();
+                settings.splice(index, 1);
+            });
+
+            function onFieldChange() {
+                item.language = languageSelect.val();
+                item.font = fontsFamilySelect.val();
+                item.ratio = Math.abs(parseInt(fontRatio.val()) || 0);
+                forceDataUpdate(data);
+            }
+
+            return container;
+        }
+
+        /*$(function() {
+           init(data);
+        });*/
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

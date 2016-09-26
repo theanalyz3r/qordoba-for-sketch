@@ -139,6 +139,8 @@ var translate = {
         var pageName = [page name];
         var symbolsContainer = context.document.documentData().layerSymbols()
         var langaugeSetting = utils.getSettingForLanguage(context,language.name)
+        log("Langauge settings is: ")
+        log(langaugeSetting)
         var newFont = false;
         if(langaugeSetting){
             newFont = utils.getFontOf(context,langaugeSetting.font)
@@ -200,7 +202,7 @@ var translate = {
                     [textLayer adjustFrameToFit];
                 }
                 if(newFont){
-                    var newFontSize = (parseInt(langaugeSetting.fsize)/100) * textLayer.fontSize()     
+                    var newFontSize = (parseInt(langaugeSetting.ratio)/100) * textLayer.fontSize()     
                     [textLayer setFont:newFont];
                     [textLayer setFontSize:newFontSize];
                     [textLayer adjustFrameToFit];

@@ -4,6 +4,7 @@ var QForms = {
 	},
 	"createDialog": function(context,title,message){
 		var alert = COSAlertWindow.new();
+		
 		var pluginPath = context.scriptPath.substring(0, context.scriptPath.lastIndexOf('/'));
 		alert.setMessageText(title);
 		alert.setInformativeText(message);

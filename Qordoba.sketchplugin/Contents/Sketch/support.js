@@ -1,7 +1,8 @@
 @import 'api.js'
 
 var onRun = function(context) {
-	 fireSupport(context);
+	qordobaSDK.common.init(context);
+	fireSupport(context);
 }
 
 

@@ -2,5 +2,6 @@
 @import 'helpers/utils.js'
 
 var onRun = function(context) {
-  fireUpdate(context,true);
+	qordobaSDK.common.init(context);
+	fireUpdate(context,true);
 }
