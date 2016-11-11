@@ -39,8 +39,9 @@ var fileHelper = {
 		var doc = context.document;
 		var frame = [page contentBounds];
 		var fileName = [page name];
-		var exportRequest = MSExportRequest.requestWithRect_scale(frame,1)
-
+		var exportRequest = [MSExportRequest new]
+		exportRequest.rect  = frame;
+		exportRequest.scale  = 1;
 		var tmpPath = NSTemporaryDirectory()
 		var fileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".png"
 		//just remove the file to make sure
