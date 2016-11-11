@@ -196,7 +196,7 @@ qordobaSDK.editor.extend({
             b: Math.round(color.blue() * 255),
             a: color.alpha(),
             "color-hex": color.immutableModelObject().stringValueWithAlpha(false) + " " + Math.round(color.alpha() * 100) + "%",
-            "argb-hex": "#" + this.toHex(color.alpha() * 255) + color.hexValue(),
+	    "argb-hex": "#" + this.toHex(color.alpha() * 255) + color.immutableModelObject().stringValueWithAlpha(false).replace("#", ""),
             "css-rgba": "rgba(" + [
                             Math.round(color.red() * 255),
                             Math.round(color.green() * 255),
@@ -386,8 +386,11 @@ qordobaSDK.editor.extend({
         else if( this.is( container, MSSharedStyleContainer ) || this.is( container, MSSharedTextStyleContainer ) ){
             items = container.objectsSortedByName();
         }
-        else{
+        else if( container.children ){
             items = container.children();
+        }
+        else{
+             items = container;
         }
 
         var queryResult = items.filteredArrayUsingPredicate(predicate);
