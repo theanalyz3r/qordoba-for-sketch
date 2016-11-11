@@ -1,7 +1,7 @@
 //@import 'api.js'
 @import "framework-utils/MochaJSDelegate.js"
 @import 'helpers/qordoba-editor.js'
-
+@import 'api.js'
 
 
 var onRun = function (context) {
