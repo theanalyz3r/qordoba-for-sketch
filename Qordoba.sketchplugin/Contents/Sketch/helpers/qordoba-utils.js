@@ -514,7 +514,7 @@ qutils.translate = {
         if(buttonPadding && qutils.is.buttonLayer(parent)){
           setButtonPadding(parent.absoluteRect(), textLayer, [parent layers], buttonPadding);
         }
-        [parent layerFinishedResize];
+        //[parent layerFinishedResize];
     });
 
     //Resize the masks
