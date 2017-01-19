@@ -4,7 +4,6 @@
 
 var controller = {
 	translateCurrentPage: function(organization,project,language, symbolOption, context){
-		log("translate current page project: " + project.id)
 		var doc = context.document
 		if(!project || !language || !organization){
 			fireConfiguration(context)
@@ -29,6 +28,9 @@ var controller = {
 			}else{
 				fireError("Success!", "Translated Pages created successfully.")
 			}
+			return;
+		}else{
+			fireError("Error!", "Couldn't load the translated content.")
 			return;
 		}
 	},

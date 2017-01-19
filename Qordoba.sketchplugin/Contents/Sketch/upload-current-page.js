@@ -6,7 +6,7 @@ var onRun = function (context) {
 		fireUpdate(context,false);
  	}
 
- 	if (utils.getActiveTokenFromComputer(context) == false) {
+ 	if (qordobaSDK.common.token == false) {
 		fireLoginWindowWithContext(context)
 	} else {
 		fireUploadForm(0, context)

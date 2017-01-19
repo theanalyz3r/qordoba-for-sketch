@@ -62,7 +62,7 @@ var fileHelper = {
 		        }
 		    }
 		    
-		    exportRequest.rect  = layer.absoluteRect();
+		    exportRequest.rect  = layer.absoluteRect();//CGRectMake(layer.absoluteRect().x, layer.absoluteRect().y, 10000,10000);
 		}
 
 		exportRequest.scale  = 1;

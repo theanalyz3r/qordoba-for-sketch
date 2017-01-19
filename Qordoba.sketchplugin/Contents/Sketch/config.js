@@ -4,7 +4,7 @@ var onRun = function (context) {
 	qordobaSDK.common.init(context);
 	if(utils.checkLastVersionChecked(context) == true){
 		fireUpdate(context);
- 	} else if (utils.getActiveTokenFromComputer(context) == false) {
+ 	} else if (qordobaSDK.common.token == false) {
 		fireLoginWindowWithContext(context)
 	} else {
 		var editor = qordobaSDK.editor.init(context);
