@@ -24,6 +24,7 @@ qordobaSDK.common = {
     page: undefined,
     artboard: undefined,
     current: undefined,
+    token: false,
     init: function(context, currentIsArtboard){
         this.context = context;
         this.document = context.document;
@@ -34,11 +35,12 @@ qordobaSDK.common = {
         this.artboard = this.page.currentArtboard();
         this.current = this.artboard || this.page;
         this.version = manifest.getPluginVersion(context);
+        this.token = getActiveToken(context);
     }
 }
 
 function sketchLog(context,string){
-	if(utils.getDebugSettingFromComputer(context) == 1)
+	if(utils.getDebugSetting(context) == 1)
 	{
 		NSLog(string)
 		errorLogging.write(context,string)
@@ -52,7 +54,7 @@ function sketchLog(context,string){
 function fireTranslateForm(all,context){
 	var doc = context.document
 	sketchLog(context,"fireTranslateForm()");
-
+	
 	var currentPage = [doc currentPage]
 	var pageName = [currentPage name];
 	var windowTitle = "Downloading Page '"+pageName+"'"
@@ -222,7 +224,7 @@ function fireTranslateForm(all,context){
 		utils.saveOrganization(organization)
 		//Translate
 		controller.translateCurrentPage(organization,project,language, symbolOption, context)
-
+		
 		[cancelButton setCOSJSTargetFunction:undefined]
 		[sendButton setCOSJSTargetFunction:undefined]
 		[languageDropdown setCOSJSTargetFunction:undefined]
@@ -610,7 +612,7 @@ function fireAlreadyLoggedInWindow(context){
 	[logoutButton setTitle:"Sign out"]
 	[logoutButton setBezelStyle:NSRoundedBezelStyle]
 	[logoutButton setCOSJSTargetFunction:function(sender) {
-		utils.deleteActiveTokenFromComputer(context)
+		utils.deleteActiveToken(context)
 	    [alreadyLoggedInWindow orderOut:nil]
 	    [app stopModal]
 	    [logoutButton setCOSJSTargetFunction:undefined]
@@ -718,7 +720,7 @@ function fireSupport(context){
 
     [debugCheckbox setButtonType:NSSwitchButton];
     [debugCheckbox setTitle:@""];
-    if(utils.getDebugSettingFromComputer(context) == 1){
+    if(utils.getDebugSetting(context) == 1){
     	[debugCheckbox setState:NSOnState];
     } else {
     	[debugCheckbox setState:NSOffState];

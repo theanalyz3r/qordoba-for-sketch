@@ -14,7 +14,7 @@ function loginWithUsernameAndPassword(email, password, context){
  *
 **/
 function getProjectsArray(organizationId,context) {
-	var token = utils.getActiveTokenFromComputer(context)
+	var token = qordobaSDK.common.token
 	
 	var url = [NSURL URLWithString:rootAppUrl + "organizations/"+organizationId+"/projects/by_type/7"];
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
@@ -32,7 +32,7 @@ function getProjectsArray(organizationId,context) {
 	    var errorJson;
 		var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:errorJson]
 		  if(res == nil || res.projects == nil || res.errMessage !=nil){
-		  		utils.deleteActiveTokenFromComputer(context)
+		  		utils.deleteActiveToken(context)
 		  		fireError("Your token is not valid anymore, please login again.","After you are logged in again please try again.")
 		  		return false
 		  } else {
@@ -71,7 +71,7 @@ function getLanguagesArray(context) {
 	if(langs){
 		return langs;
 	}
-	var token = utils.getActiveTokenFromComputer(context)
+	var token = qordobaSDK.common.token
 	var url = [NSURL URLWithString:rootAppUrl + "languages"];
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 	[request setHTTPMethod:"GET"]
@@ -87,7 +87,7 @@ function getLanguagesArray(context) {
 	    var errorJson;
 		var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:errorJson]
 		  if(res == nil || res.languages == nil || res.errMessage !=nil){
-		  		utils.deleteActiveTokenFromComputer(context)
+		  		utils.deleteActiveToken(context)
 		  		fireError("Your token is not valid anymore, please login again.","After you are logged in again please try again.")
 		  		return false
 		  } else {
@@ -182,11 +182,12 @@ function getTokenFromServer(email,password, context){
  *
 **/
 function postFile(context, path, organizationId, projectId, filename) {
-	var token = utils.getActiveTokenFromComputer(organizationId,context)
+	var token = getActiveToken(organizationId,context)
 	if(!token) {
 		utils.fireError("Invalid Token", "Please make sure you have a valid login and API access.")
 		return false;
 	}
+	
 	var doc = context.document
 	var task = NSTask.alloc().init()
 	task.setLaunchPath("/usr/bin/curl");
@@ -235,7 +236,7 @@ function postFile(context, path, organizationId, projectId, filename) {
  *
 **/
 function postReference(context, screenshotPath, geometryPath, organizationId, projectId, fileId, filename) {
-	var token = utils.getActiveTokenFromComputer(organizationId,context)
+	var token = getActiveToken(organizationId,context)
 	if(!token) {
 		utils.fireError("Invalid Token", "Please make sure you have a valid login and API access.")
 		return false;
@@ -292,7 +293,7 @@ function postReference(context, screenshotPath, geometryPath, organizationId, pr
  *
 **/
 function downloadFileNSUrlConnection(context, organizationId, projectId, languageId, fileId) {
-	var token = utils.getActiveTokenFromComputer(context)
+	var token = qordobaSDK.common.token
 	var url = [NSURL URLWithString:rootAppUrl + "projects/" + projectId + "/languages/"+ languageId + "/files/" + fileId];
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 	[request setHTTPMethod:"GET"]
@@ -320,8 +321,9 @@ function downloadFileNSUrlConnection(context, organizationId, projectId, languag
  *
 **/
 function downloadFileByName(context, organizationId, projectId, languageId, file_name) {
-	var token = utils.getActiveTokenFromComputer(context)
+	var token = qordobaSDK.common.token
 	var url = [NSURL URLWithString:rootAppUrl + "projects/" + projectId + "/languages/"+ languageId +"/download_file" ];
+
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 	[request setHTTPMethod:"POST"]
 	[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
@@ -344,17 +346,17 @@ function downloadFileByName(context, organizationId, projectId, languageId, file
 			fireError("Error!", res.errMessage)
 			return false;
 		}
-		theResponseText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-		jsonObject = fileHelper.csvToJson(theResponseText)
+		var theResponseText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+		var jsonObject = fileHelper.csvToJson(theResponseText)
 		return jsonObject;
 	} else {
 		dealWithErrors(context,data)
+		return false;
 	}
-	return false;
 }
 
 function downloadFileNSUrlConnectionAsync(context, organizationId, projectId, languageId, fileId, downloadCallback) {
-	var token = utils.getActiveTokenFromComputer(context)
+	var token = qordobaSDK.common.token
 	var url = [NSURL URLWithString:rootAppUrl + "projects/" + projectId + "/languages/"+ languageId + "/files/" + fileId];
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 	[request setHTTPMethod:"GET"]
@@ -385,7 +387,7 @@ function downloadFileNSUrlConnectionAsync(context, organizationId, projectId, la
 **/
 function getUserStatus(context) {
 		var doc = context.document
-		var token = utils.getActiveTokenFromComputer(context)
+		var token = qordobaSDK.common.token
 		var url = [NSURL URLWithString:rootAppUrl + "user/status"];
         var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 		[request setHTTPMethod:"GET"]
@@ -414,14 +416,10 @@ function getUserStatus(context) {
 
 
 
-/**
- *
- * Get User Status 
- *
-**/
-function validateSession(context) {
-		var token = utils.getActiveTokenFromComputer(context)
-		var url = [NSURL URLWithString:rootAppUrl + "session"];
+function getActiveToken(context) {
+    var token = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_token" + "_" + qordobaSDK.common.version];
+    if (token) {
+        var url = [NSURL URLWithString:rootAppUrl + "session"];
         var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 		[request setHTTPMethod:"GET"]
 		[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
@@ -431,18 +429,19 @@ function validateSession(context) {
 		var response = nil;
 		var data = [NSURLConnection sendSynchronousRequest:request returningResponse:response error:error];
         if (error == nil && data != nil){	
-				var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil]
-				return true;
-				if(res == nil || res.errMessage != nil){
-					return false;
-				}else if(res.token){
-				  	return true;
-				} else {
-					return false;
-				}
+			var res = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil]
+			if(res == nil || res.errMessage != nil){
+				return false;
+			}else if(res.token){
+				return res.token;
+			} else {
+				return false;
+			}
 		}
-		return false;	
+		return false;
+    } else {
+      return false;
+    }
 }
-
 
 

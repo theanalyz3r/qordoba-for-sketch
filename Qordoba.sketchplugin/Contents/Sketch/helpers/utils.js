@@ -72,15 +72,7 @@ utils = {
     [[NSUserDefaults standardUserDefaults] setObject:useremail forKey:"QUSER_qordoba_user_email" + "_" + qordobaSDK.common.version]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
-  "getActiveTokenFromComputer": function(context) {
-    var token = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_token" + "_" + qordobaSDK.common.version];
-    if (token) {
-      return token;
-    } else {
-      return false;
-    }
-  },
-
+  
   "getUserName": function(context) {
     var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_name" + "_" + qordobaSDK.common.version];
     if (value) {
@@ -259,7 +251,7 @@ utils = {
       var pageId = page.objectID()
       return [pages containsObject:pageId]
     },
-    "getDebugSettingFromComputer": function(context){
+    "getDebugSetting": function(context){
     var debug = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_debug"]
     if (debug) {
       return debug

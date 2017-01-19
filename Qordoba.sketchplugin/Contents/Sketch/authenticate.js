@@ -2,13 +2,9 @@
 
 var onRun = function(context) {
 	qordobaSDK.common.init(context);
-	if (utils.getActiveTokenFromComputer(context) == false) {
+	if (qordobaSDK.common.token == false) {
 		fireLoginWindowWithContext(context);
 	} else {
-		if(!validateSession(context)){
-			fireLoginWindowWithContext(context);
-		}else{
-			fireAlreadyLoggedInWindow(context);
-		}
+		fireAlreadyLoggedInWindow(context);
 	}
 }
