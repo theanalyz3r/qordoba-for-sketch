@@ -40,13 +40,32 @@ var fileHelper = {
 		var frame = [page contentBounds];
 		var fileName = [page name];
 		var exportRequest = [MSExportRequest new]
-		exportRequest.rect  = frame;
-		exportRequest.scale  = 1;
+		//exportRequest.rect  = frame;
 		var tmpPath = NSTemporaryDirectory()
 		var fileName = fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".png"
 		//just remove the file to make sure
 		this.removeFile(tmpPath  + fileName,context)
 		
+		if(frame.size.width <= 10000 || frame.size.height <= 10000){
+			exportRequest.rect  = frame;
+		} else if(page.artboards().count() > 0) {
+			//get the first artboards
+		    var layer = page.artboards().firstObject();
+		    exportRequest = MSExportRequest.exportRequestsFromExportableLayer(layer).firstObject()
+		} else {
+			var layers = page.containedLayers()
+		    var layer = null;
+		    for (var i = 0; i < layers.count(); i++) {
+		        if(layers[i].isVisible() && layers[i].class() == MSLayerGroup){
+		            layer = layers[i];
+		            break;
+		        }
+		    }
+		    
+		    exportRequest.rect  = layer.absoluteRect();
+		}
+
+		exportRequest.scale  = 1;
 		if(this.createFolderAtPath(context, tmpPath)){
 			var filePath= tmpPath + fileName
 			doc.saveArtboardOrSlice_toFile(exportRequest, filePath)

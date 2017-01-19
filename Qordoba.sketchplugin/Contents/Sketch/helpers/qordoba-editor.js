@@ -837,6 +837,9 @@ qordobaSDK.editor.extend({
     	var self = this,
         	savePath = NSTemporaryDirectory();
         log("Saving the reference at: " + savePath);
+
+        var hasArtboards = (self.page.artboards().count() > 0)
+        
         this.selectionArtboards  = this.page.artboards();
         //self.message(_("Exporting..."));
 	    var processingPanel = this.WebPanel({
@@ -887,10 +890,13 @@ qordobaSDK.editor.extend({
                 utils.saveFileIdForPage(projectID,documentName,currentPage,fileId,self.context)
                 log("file id is: " + fileId)
             }
-            if(idx > 70 && filePath != false && fileId != false && geometryPath === false){
+            if(idx > 70 && filePath != false && fileId != false && geometryPath === false && hasArtboards){
                 processMessage = _("Uploading the reference document..");
                 processing.evaluateWebScript("processing('"  + Math.round( idx ) +  "%', '" + processMessage + "')");
                 var screenShotFile = fileHelper.exportPageToPng(context,currentPage);
+                
+                log("screenShotFile file name: " + screenShotFile)
+
                 geometryPath = self.specExport();
                 if(geometryPath){
                     geometryPath = geometryPath + "index.html";
@@ -925,6 +931,12 @@ qordobaSDK.editor.extend({
                 fireError("Success!", "Your page \""+documentName + " - "+ pageName+"\" has been uploaded to Qordoba.")       
 	            return interval.cancel();
 	        }
+
+            if( idx >100 && filePath != false && fileId != false && geometryPath == false && !hasArtboards){
+                coscript.shouldKeepAround = false;
+                fireError("Success!", "Your page \""+documentName + " - "+ pageName+"\" has been uploaded to Qordoba. \nNote: Qordoba couldn't upload the page preview because the selected page has no artboards!")       
+                return interval.cancel();
+            }
 	    });
     },
     specExport: function(){
