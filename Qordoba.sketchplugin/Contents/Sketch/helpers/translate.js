@@ -195,8 +195,8 @@ var translate = {
                 //textLayer.dontSynchroniseWithSymbol = true;
 
                 //Update the layer text and adjust the other layers    
-                qutils.translate.updateLayerText(newPage, textLayer, data[stringValue]);
-                //textLayer.setStringValue(data[stringValue]);   
+                //qutils.translate.updateLayerText(newPage, textLayer, data[stringValue]);
+                textLayer.setStringValue(data[stringValue]);   
                 // 0 = flexible, 1 = fixed
                 // 0 = left, 1 = right, 2 = center, 3 = justified
                 //for some cases we found that 4 is left also
