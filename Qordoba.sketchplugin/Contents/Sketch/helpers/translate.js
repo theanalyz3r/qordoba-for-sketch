@@ -154,6 +154,13 @@ var translate = {
         doc.setCurrentPage(newPage);
         var textLayers = [];
         if(symbolOption == "detach"){
+            //detach the first layer of symbols
+            this.detachPageFromSymbols(newPage);
+            //detach the second layer of symbols
+            this.detachPageFromSymbols(newPage);
+            //detach the third layer of symbols
+            this.detachPageFromSymbols(newPage);
+            //detach the forth layer of symbols
             this.detachPageFromSymbols(newPage);
             textLayers  = this.getTextLayersForChildren([newPage children]);
         }else{
