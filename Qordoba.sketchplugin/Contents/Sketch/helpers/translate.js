@@ -8,39 +8,38 @@ var translate = {
         var app = [NSApplication sharedApplication];
         [app displayDialog:msg withTitle:title];
     },
-    getOverrideDefaultValuesForChildren: function(layers, data, dict){
+
+    getOverrideDefaultValuesForChildren: function(layers, data) {
          for (var i = 0; i < layers.count(); i++) {
             var layer = [layers objectAtIndex:i];
             if (this.isTextLayer(layer)) {
                 var stringVal = layer.stringValue();
-                if(data[stringVal]){
+                if(data[stringVal]) {
                     var transaltedString = data[stringVal];
                     log(""+stringVal+" is found: " + transaltedString)
                     var objectID = layer.objectID();
-                    [dict setObject:transaltedString forKey:objectID];
-                }else{
-                    log(""+data[stringVal]+" is not found")
+
+                    layer.setStringValue(transaltedString);
                 }
-            }else if(layer.isKindOfClass(MSSymbolInstance)){
-                var subObj = [[NSMutableDictionary alloc] init];
-                this.getOverrideDefaultValuesForChildren(layer.symbolMaster().children(),data, subObj);
-                [dict setObject:subObj forKey:objectID];
+            }
+            else if (layer.isKindOfClass(MSSymbolInstance)) {
+                this.getOverrideDefaultValuesForChildren(layer.symbolMaster().children(), data);
             }
         }
-        return dict;
     },
 
-    getOverridesForPage: function(page){
+    getOverridesForPage: function(page) {
         var layers = [page children];
         var textLayers = [];
          for (var i = 0; i < layers.count(); i++) {
             var layer = [layers objectAtIndex:i];
-            if(layer.isKindOfClass(MSSymbolInstance)){
+            if(layer.isKindOfClass(MSSymbolInstance)) {
                 textLayers = textLayers.concat(qutils.common.dictionarytoArray(layer.overrides()));
             }
         }
         return textLayers;
     },
+
     getPageTextLayersWithoutSymbol: function(layers) {
         var textLayers = [];
          for (var i = 0; i < layers.count(); i++) {
@@ -52,7 +51,7 @@ var translate = {
         return textLayers;
     },
 
-    getTextLayersForChildren: function(layers){
+    getTextLayersForChildren: function(layers) {
         var textLayers = [];
          for (var i = 0; i < layers.count(); i++) {
             var layer = [layers objectAtIndex:i];
@@ -99,22 +98,23 @@ var translate = {
         return this.generateLocaleForPage(currentPage);
     },
 
-    detachSymbol: function(layer){
+    detachSymbol: function(layer) {
         if (layer.isKindOfClass(MSSymbolInstance)) {
             layer = layer.detachByReplacingWithGroup()
             layers = [layer children];
-
             for (var i = 0; i < [layers count]; i++) {
-                this.detachSymbol(layers[i])
+                var layer = layers[i];
+                this.detachSymbol(layer);
             }
         }
-    }, 
+    },
 
-    detachPageFromSymbols: function(page){
+    detachPageFromSymbols: function(page) {
         qutils.call.pageLayers(page,function(layer){
             translate.detachSymbol(layer)
         });
     },
+
     excludeAllTextLayers: function(context) {
         var doc = context.document
         var pages = [doc pages]
@@ -131,6 +131,7 @@ var translate = {
         }
         return true;
     },
+
     translatePageWithData: function(context,page, language, data,symbolOption) {
         //NSLog("translatePageWithData")
         //exclude text from all symbols
@@ -145,7 +146,7 @@ var translate = {
         if(langaugeSetting){
             newFont = utils.getFontOf(context,langaugeSetting.font)
         }
-        
+
         //Duplicate the page
         var newPage = page.copy();
         //newPage.pageDelegate = page.pageDelegate();
@@ -153,50 +154,37 @@ var translate = {
         doc.documentData().addPage(newPage);
         doc.setCurrentPage(newPage);
         var textLayers = [];
-        if(symbolOption == "detach"){
-            //detach the first layer of symbols
-            this.detachPageFromSymbols(newPage);
-            //detach the second layer of symbols
-            this.detachPageFromSymbols(newPage);
-            //detach the third layer of symbols
-            this.detachPageFromSymbols(newPage);
-            //detach the forth layer of symbols
+
+        if(symbolOption == "detach") {
             this.detachPageFromSymbols(newPage);
             textLayers  = this.getTextLayersForChildren([newPage children]);
-        }else{
+        }
+        else {
             //handle the symbols overrides
             var pageLayers = [newPage children];
             for (var i = 0; i < pageLayers.count(); i++) {
                 var layer = [pageLayers objectAtIndex:i];
-                if(layer.isKindOfClass(MSSymbolInstance)){
+
+                if(layer.isKindOfClass(MSSymbolInstance)) {
                     var dict = [[NSMutableDictionary alloc] init];
-                    var overrides = layer.overrides();
                     var symbolLayers = layer.symbolMaster().children();
-                    
-                    var res = this.getOverrideDefaultValuesForChildren(symbolLayers,data, dict);
-                    var transaltedOverrides = [[NSMutableDictionary alloc] init];
-                    [transaltedOverrides setObject:res forKey:0]
-                    layer.applyOverrides(transaltedOverrides);
-                    layer.applyOverrides(transaltedOverrides);
-                    log("----- Symbole layers and overrides ----");
-                    log(transaltedOverrides);
-                    log(overrides);
+                    this.getOverrideDefaultValuesForChildren(symbolLayers,data, dict);
                 }
             }
             //other text layers
-            textLayers = this.getPageTextLayersWithoutSymbol([newPage children])
-            
+            textLayers = this.getPageTextLayersWithoutSymbol([newPage children]);
         }
-        
+
         var errorCount = 0;
         for (var i = 0; i < textLayers.length; i++) {
             var textLayer = textLayers[i], stringValue = unescape(textLayer.stringValue());
             if(data[stringValue]){
                 //textLayer.dontSynchroniseWithSymbol = true;
 
-                //Update the layer text and adjust the other layers    
+                //Update the layer text and adjust the other layers
                 //qutils.translate.updateLayerText(newPage, textLayer, data[stringValue]);
-                textLayer.setStringValue(data[stringValue]);   
+                textLayer.setStringValue(data[stringValue]);
+
                 // 0 = flexible, 1 = fixed
                 // 0 = left, 1 = right, 2 = center, 3 = justified
                 //for some cases we found that 4 is left also
@@ -209,18 +197,15 @@ var translate = {
                     [textLayer adjustFrameToFit];
                 }
                 if(newFont){
-                    var newFontSize = (parseInt(langaugeSetting.ratio)/100) * textLayer.fontSize()     
+                    var newFontSize = (parseInt(langaugeSetting.ratio)/100) * textLayer.fontSize()
                     [textLayer setFont:newFont];
                     [textLayer setFontSize:newFontSize];
                     [textLayer adjustFrameToFit];
                 }
-            }else{
-                log("Not found: " + stringValue)
-                errorCount++;
             }
         }
+
         utils.addGeneratedPage(newPage,context)
-        
 
         return errorCount;
     }
