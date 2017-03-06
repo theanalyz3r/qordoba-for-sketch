@@ -7,7 +7,7 @@ utils = {
     var length = closeRange.location - openRange.location -1
     return [[string substringFromIndex:NSMaxRange(openRange)] substringToIndex:length]
   },
-  
+
   "isRetinaDisplay": function(){
     return NSScreen.isOnRetinaScreen();
   },
@@ -72,7 +72,7 @@ utils = {
     [[NSUserDefaults standardUserDefaults] setObject:useremail forKey:"QUSER_qordoba_user_email" + "_" + qordobaSDK.common.version]
     [[NSUserDefaults standardUserDefaults] synchronize]
   },
-  
+
   "getUserName": function(context) {
     var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_name" + "_" + qordobaSDK.common.version];
     if (value) {
@@ -98,8 +98,8 @@ utils = {
       return false;
     }
   },
-  
-  "deleteActiveTokenFromComputer": function(context) {
+
+  "deleteActiveToken": function(context) {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_token" + "_" + qordobaSDK.common.version];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_user_id" + "_" + qordobaSDK.common.version];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_user_name" + "_" + qordobaSDK.common.version];
@@ -109,7 +109,7 @@ utils = {
   "saveUserOrganizations": function(context,organizations) {
       [[NSUserDefaults standardUserDefaults] setObject:organizations forKey:"QUSER_qordoba_user_organizations" + "_" + qordobaSDK.common.version]
       [[NSUserDefaults standardUserDefaults] synchronize]
-  }, 
+  },
 
   "getUserOrganizations": function(context) {
     var value = [[NSUserDefaults standardUserDefaults] objectForKey:"QUSER_qordoba_user_organizations" + "_" + qordobaSDK.common.version];
@@ -118,7 +118,7 @@ utils = {
     } else {
       return false;
     }
-  },     
+  },
   "fireError": function(title,text){
     [app displayDialog:text withTitle:title]
   },
@@ -347,7 +347,7 @@ utils = {
           }
       }
       return -1;
-  },  
+  },
   "resetLanguageSettings": function(context){
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"QUSER_qordoba_language_settings"];
     [[NSUserDefaults standardUserDefaults] synchronize]
@@ -384,7 +384,7 @@ utils = {
     if(index>=0){
       settings[index] = obj
     }else{
-      settings.push(obj)  
+      settings.push(obj)
     }
     this.saveLanguageSettings(settings,context)
     return settings;
@@ -397,7 +397,7 @@ utils = {
 "getFontOf": function(context,fontName) {
     var doc = context.document
     var fontList = [doc fontList];
-    
+
     //get index
     var objs = [fontList allFonts]
     var index = -1;

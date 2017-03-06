@@ -3,8 +3,9 @@
   "description": "Integration with Qordoba Translation Platform",
   "author": "Qordoba",
   "homepage": "https://qordoba.com",
-  "version": 2.5,
+  "version": 2.7,
   "identifier": "com.qordoba.sketch.plugin",
+  "disableCocoaScriptPreprocessor": false,
   "commands": [
     {
       "name": "Login / Logout",
