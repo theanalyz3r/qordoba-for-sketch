@@ -50,4 +50,4 @@ You use of the software at your sole risk. The Software and accompanying written
 
 Qordoba or anyone else who has been involved in the creation, production, or delivery of this software cannot be liable for, and shall not pay any amount of incidental, consequential, direct or indirect damages (including damage for loss of profit, business interruption, loss of data, and the like arising out of the use or inability to use the software). You assume the entire risk as to the quality and performance of the software.
 
-The laws of the Netherlands, excluding its conflicts of law rules, govern this license and your use of the Licensed Application. Your use of the Licensed Application may also be subject to other local, state, national, or international laws.
+The laws of the California, excluding its conflicts of law rules, govern this license and your use of the Licensed Application. Your use of the Licensed Application may also be subject to other local, state, national, or international laws.
