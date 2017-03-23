@@ -1,10 +1,10 @@
-#This Agreement is valid for Trial and Lifetime Licenses of Qordoba Sketch product
+# This Agreement is valid for Trial and Lifetime Licenses of Qordoba Sketch product
 
 We ask you to read this end user license agreement thoroughly before you install and use Qordoba software (“software”). By installing or using software you agree to be bound by the terms of agreement. Do not install or use software if you do not agree with the terms of agreement.
 
 This end-user license agreement is a legal agreement between you (an individual or a single entity) and Qordoba for trial and full versions of the Qordoba software.
 
-###Definitions
+###Definitions   
 
 In this Agreement, the following terms shall have the meanings indicated, both the singular and plural forms and all verb forms of these terms are defined:
 
