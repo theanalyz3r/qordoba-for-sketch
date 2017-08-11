@@ -59,8 +59,5 @@ Go to the Sketch Plugin Directory and replace the Qordoba.sketchplugin file with
 This plugin is actively being improved, so let us know if you encounter any issues via Plugins→Support and Updates→Report a bug. Replicating the bug and then returning to the menu will send us an instant bug report.  
 Note: There is a known issue with text layers in nested symbols. The nesting is not allowing the plugin to unlink text layers. If you are using symbols heavily, we recommend that you duplicate your source page as a “For Localization” version in Sketch before sending to Qordoba. 
 
-License
-----
 
-The MIT License (MIT)
 
