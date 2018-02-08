@@ -8,8 +8,6 @@ Download, unzip, double click the Qordoba.sketchplugin file. It will be installe
 
 ![Alt text](https://storage.googleapis.com/storage.qordoba.com/Plugin%20Menu.png "Installation")
 
-
-
 ### Demo 
 
 ##### Uploading a page to Qordoba
