@@ -124,19 +124,15 @@ function getLanguagesArray(context) {
 
 function getTokenFromServer(email,password, context){
 	sketchLog(context,"qordoba-api.getTokenFromServer()")
-	var url = [NSURL URLWithString:rootAppUrl + "login"];
+	var url = [NSURL URLWithString:  rootAppUrl + "login"];
 	var request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60]
 	[request setHTTPMethod:"PUT"]
 	[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
-	var remember = true;
-	var tmp = [[NSDictionary alloc] initWithObjectsAndKeys:
-	                     email, @"username",
-	                     password, @"password",
-	                     remember, @"remember",
-	                     nil];
-	
-	var error = nil;                     
-	var postData = [NSJSONSerialization dataWithJSONObject:tmp options:NSUTF8StringEncoding error:error];
+	[request setValue:"sketch" forHTTPHeaderField:"User-Agent"]
+
+	var error = nil;    
+	var parameters = {"username": email, "password": password, "remember":true};
+	var postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSUTF8StringEncoding error:error]
 	[request setHTTPBody:postData];
 	var response = nil;
 	var error = nil;
@@ -191,7 +187,7 @@ function postFile(context, path, organizationId, projectId, filename) {
 	var doc = context.document
 	var task = NSTask.alloc().init()
 	task.setLaunchPath("/usr/bin/curl");
-	var args = NSArray.arrayWithObjects("-v",
+	var args = NSArray.arrayWithArray(["-v",
 	 "POST", 
 	 "--header", "Content-Type: multipart/form-data", 
 	 "--header", "X-AUTH-TOKEN: " + token, 
@@ -199,7 +195,7 @@ function postFile(context, path, organizationId, projectId, filename) {
 	 	"-F",'file_names=[{"upload_id":"","file_name":"'+filename+'"}]',
 	 	"-F", "Content-Disposition: form-data; name=file; filename=" + filename + "; Content-Type=image/png;",
 	 	"-F", "file=@" + path, 
-	 	rootAppUrl+"projects/"+projectId+"/user_upload_files?smart-suggest=true&update=true", nil);
+	 	rootAppUrl+"projects/"+projectId+"/user_upload_files?smart-suggest=true&update=true"]);
 	log(args)
 	task.setArguments(args);
 	var outputPipe = [NSPipe pipe];
@@ -244,7 +240,7 @@ function postReference(context, screenshotPath, geometryPath, organizationId, pr
 	var doc = context.document
 	var task = NSTask.alloc().init()
 	task.setLaunchPath("/usr/bin/curl");
-	var args = NSArray.arrayWithObjects("-v", 
+	var args = NSArray.arrayWithArray(["-v", 
 		"POST", 
 		"--header", "Content-Type: multipart/form-data", 
 		"--header", "X-AUTH-TOKEN: " + token, 
@@ -254,7 +250,7 @@ function postReference(context, screenshotPath, geometryPath, organizationId, pr
 			"-F", "screenshot=@" + screenshotPath, 
 			"-F", "Content-Disposition: form-data; name=geometry; filename=" + filename + "; Content-Type=text/html;", 
 			"-F", "geometry=@" + geometryPath, 
-			rootAppUrl+"projects/"+projectId+"/pages/"+fileId+"/reference", nil);
+			rootAppUrl+"projects/"+projectId+"/pages/"+fileId+"/reference"]);
 	log('upload reference file')
 	log(args)
 	task.setArguments(args);
@@ -329,10 +325,8 @@ function downloadFileByName(context, organizationId, projectId, languageId, file
 	[request setValue:"application/json" forHTTPHeaderField:"Content-Type"]
 	[request setValue:token forHTTPHeaderField:"X-AUTH-TOKEN"]
 
-	var tmp = [[NSDictionary alloc] initWithObjectsAndKeys:
-	                     file_name, @"file_name",
-	                     nil];
-		var postData = [NSJSONSerialization dataWithJSONObject:tmp options:NSUTF8StringEncoding error:error];
+	var parameters = {"file_name": file_name};
+	var postData = [NSJSONSerialization dataWithJSONObject:parameters options:NSUTF8StringEncoding error:error];
 	[request setHTTPBody:postData];
 	
 	var tempPostData = [NSMutableData data]; 
