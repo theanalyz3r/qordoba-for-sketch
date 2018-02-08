@@ -943,7 +943,7 @@ qordobaSDK.editor.extend({
         var self = this,
             savePath = NSTemporaryDirectory();
         log("Saving the reference at: " + savePath);
-        this.selectionArtboards  = this.page.artboards();
+        this.selectionArtboards  = this.page.artboards().slice(0,5);
         //self.message(_("Exporting..."));
         
         this.savePath = savePath;
@@ -1000,7 +1000,7 @@ qordobaSDK.editor.extend({
                     // data.artboards[artboardIndex].imagePath = "preview/" + objectID + ".png";
                     var imageURL = NSURL.fileURLWithPath(self.exportImage({
                             layer: artboard,
-                            scale: 2,
+                            scale: 0.5,
                             name: objectID
                         })),
                         imageData = NSData.dataWithContentsOfURL(imageURL),
@@ -1180,8 +1180,9 @@ qordobaSDK.editor.extend({
             });
          }
         var doc = context.document
-        var fonts = doc.fontList()
-        fonts = fonts.allFonts()
+        var fontList = doc.documentData().fontList();
+        fontList.reloadFonts();
+        var fonts = fontList.allFonts();
         for(var i = 0; i < fonts.count(); i++){
             data.fonts.push({
                 id: (fonts[i] + "").toLowerCase(),

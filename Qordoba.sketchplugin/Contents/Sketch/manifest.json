@@ -3,7 +3,7 @@
   "description": "Integration with Qordoba Translation Platform",
   "author": "Qordoba",
   "homepage": "https://qordoba.com",
-  "version": 2.7,
+  "version": 2.9,
   "identifier": "com.qordoba.sketch.plugin",
   "disableCocoaScriptPreprocessor": false,
   "commands": [
