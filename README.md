@@ -1,21 +1,16 @@
 # Qordoba for Sketch 
 
-Qordoba’s Sketch plugin allows designers to translate their mockups to other languages, making product internationalization easier.
+Qordoba’s Sketch plugin allows designers to send their mockups content to Qordoba, making product content update easier.
 
 
 # Installation 
 Download, unzip, double click the Qordoba.sketchplugin file. It will be installed automatically. Then head over to the plugin menu and log in with your Qordoba credentials.
 
-![Alt text](https://storage.googleapis.com/storage.qordoba.com/Plugin%20Menu.png "Installation")
 
 ### Demo 
 
 ##### Uploading a page to Qordoba
 
-![Alt text](https://storage.googleapis.com/storage.qordoba.com/UploadCurrentPagetoQordoba.png "Uploading a page to Qordoba")
-
-
-![Alt text](https://storage.googleapis.com/storage.qordoba.com/Uploading%20a%20Page%20to%20Qordoba.gif "Uploading a page to Qordoba")
 
 To upload a selected Page to Qordoba, go to Plugins → Qordoba → Upload Current Page to Qordoba. You will be asked to choose which Organization and Project within Qordoba you’d like to send the Page to, in case you are a member of multiple Organizations / Projects. 
 
@@ -23,11 +18,10 @@ If the Page has already been sent to same Project, a versioning suffix will be
 added to the end of the Page name within Qordoba.
 
 
-##### Download a translated page from Qordoba
+##### Download a new content from Qordoba
 
-![Alt text](https://storage.googleapis.com/storage.qordoba.com/Downloading.gif " Download a translated page from Qordoba")
 
-To download the translation of a Page, go to Plugins → Qordoba → Download Current Page. Choose what language you want to download (this is defined in your Qordoba project settings). Ta da! Your localized design will be downloaded as a separate page. If you’ve downloaded an RTL language, the text layers will automatically be right-justified.
+To download the content of a Page, go to Plugins → Qordoba → Download Current Page. Choose what language you want to download (this is defined in your Qordoba project settings). Ta da! Your new content design will be downloaded as a separate page. If you’ve downloaded an RTL language, the text layers will automatically be right-justified.
 
 ##### Setting font settings
 
